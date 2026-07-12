@@ -36,6 +36,8 @@ Concept breakdowns saved as comparison tables for quick reference.
 | File | Topic |
 |------|-------|
 | [`SourceCode_ByteCode_Binary_IQ.md`](./IQ_Notes/SourceCode_ByteCode_Binary_IQ.md) | Source code vs bytecode vs binary code |
+| [`Identifier_vs_Literal_IQ.md`](./chapter_01_Basics/IQ_Notes/Identifier_vs_Literal_IQ.md) | Identifier vs literal in JavaScript |
+| [`Null_vs_Undefined_IQ.md`](./chapter_01_Basics/IQ_Notes/Null_vs_Undefined_IQ.md) | Null vs undefined in JavaScript |
 
 ---
 
