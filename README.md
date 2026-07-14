@@ -27,6 +27,19 @@ Identifier rules, naming conventions, and comment syntax in JavaScript.
 | [`05_Comments.js`](./03_chapter_identifier/05_Comments.js) | Single-line, multi-line, and JSDoc comment syntax |
 | [`06_Identifier_IQ.js`](./03_chapter_identifier/06_Identifier_IQ.js) | Identifier rules recap + Unicode identifiers (`café`, `变量`) + naming conventions |
 
+### `05_chapter_Operator`
+Operators in JavaScript — assignment, arithmetic, comparison, logical, and type coercion gotchas.
+
+| File | Topic |
+|------|-------|
+| [`13_DataType.js`](./05_chapter_Operator/13_DataType.js) | JS data types overview: string, number, boolean, bigint, undefined, null, Symbol, array, NaN |
+| [`14_Assignment_Operator.js`](./05_chapter_Operator/14_Assignment_Operator.js) | `=`, `+=`, `-=`, `*=`, `/=`, `%=` assignment operators |
+| [`15_Arithmetic_Opeartor.js`](./05_chapter_Operator/15_Arithmetic_Opeartor.js) | `+`, `-`, `*`, `/`, `%` (modulus), `**` (exponent) |
+| [`16_Comparsion_Operator.js`](./05_chapter_Operator/16_Comparsion_Operator.js) | `==` vs `===`, `!=` vs `!==`, `>`, `<`, `>=`, `<=` |
+| [`17_Logical_Operators.js`](./05_chapter_Operator/17_Logical_Operators.js) | `&&` (AND), `\|\|` (OR), `!` (NOT) |
+| [`18_Confusing_Comparsion.js`](./05_chapter_Operator/18_Confusing_Comparsion.js) | `==` coercion gotchas: `"" == 0`, `"0" == 0`, and broken transitivity |
+| [`18_Confusing_Comparsion_P2.js`](./05_chapter_Operator/18_Confusing_Comparsion_P2.js) | `null == undefined`, `null >= 0` coercion trap |
+
 ---
 
 ## IQ_Notes
