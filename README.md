@@ -1,6 +1,6 @@
 # Learning Playwright 3x
 
-A learning repository tracking JavaScript fundamentals from first principles, alongside RICE-prompt notes for automation framework generation and a growing `IQ_Notes` reference library (interview-style concept explainers).
+A structured journey through JavaScript fundamentals, building toward Playwright automation. Covers first principles (variables, identifiers, operators) through control flow (statements, switch, user input), with interview-style IQ notes as reference.
 
 ---
 
@@ -22,7 +22,9 @@ A learning repository tracking JavaScript fundamentals from first principles, al
 - [06 Statements and Conditionals](#06-statements-and-conditionals)
 - [07 Switch Statements](#07-switch-statements)
 - [08 User Input](#08-user-input)
+- [HackerRank — Practice Problems](#hackerrank--practice-problems)
 - [IQ_Notes — Reference Library](#iq_notes--reference-library)
+- [Local Additions](#local-additions)
 
 ---
 
@@ -72,7 +74,11 @@ LearnPlaywright3x/
 │   ├── 33_Ad_Incre.js                        # increment inside an expression
 │   ├── 34_Incre_Part2.js                     # post-increment return value vs variable
 │   ├── 35_Decrement.js                       # pre vs post decrement (--a vs a--)
-│   └── 36_Null_Coalescing.js                 # nullish coalescing ?? (null/undefined fallback)
+│   ├── 36_Null_Coalescing.js                 # nullish coalescing ?? (null/undefined fallback)
+│   ├── Practice_IncrementOperator.js         # a++ + ++a + a++ + ++a expression walkthrough
+│   ├── Practice_Decrement_Operator.js        # a-- - --a expression walkthrough
+│   ├── Practice_Decrement_Operator_Diff.js   # duplicate of above
+│   └── Practice_Increment_Ternary_Operator.js # i++ > 1 ? i++ : ++i test
 ├── 06_chapter_Statement/
 │   ├── 37_IQ.js                              # if / else -> age gate
 │   ├── 38_IQ2.js                             # nested if -> drink-age check
@@ -93,13 +99,24 @@ LearnPlaywright3x/
 │   ├── 49_Node_UI.js                         # Node.js readline input
 │   ├── 50_Prompt.js                          # prompt-sync package input
 │   └── 51_Fs.js                              # stdin input with fs.readFileSync
-└── IQ_Notes/
-    ├── README.md                             # reusable prompt template for new IQ notes
-    ├── Source_Code_ByteCODE_Binary_IQ.md      # source vs bytecode vs machine code
-    ├── 01_Identifier_Rules.md                 # identifier rules reference
-    ├── 02_Keyword_Notes.md                    # all JS reserved keywords by category
-    ├── 03_commands_mac.md                     # VS Code shortcuts — macOS
-    └── 03_commands_win.md                     # VS Code shortcuts — Windows
+├── HackerRank/
+│   ├── Practice_IfElse.js                    # if/else ladder — marks to grade
+│   └── Practice_Switch.js                    # switch — number to English word
+├── IQ_Notes/
+│   ├── README.md                             # reusable prompt template for new IQ notes
+│   ├── SourceCode_ByteCode_Binary_IQ.md      # source vs bytecode vs binary (alternate)
+│   ├── Source_Code_ByteCODE_Binary_IQ.md     # source vs bytecode vs machine code
+│   ├── 01_Identifier_Rules.md                # identifier rules reference
+│   ├── 02_Keyword_Notes.md                   # all JS reserved keywords by category
+│   ├── 03_commands_mac.md                    # VS Code shortcuts — macOS
+│   └── 03_commands_win.md                    # VS Code shortcuts — Windows
+├── chapter_01_Basics/
+│   ├── 01_HelloWorld.js                      # console.log (legacy copy)
+│   ├── 02_let_concept.js                     # simpler let example
+│   └── IQ_Notes/
+│       ├── Identifier_vs_Literal_IQ.md       # identifier vs literal
+│       └── Null_vs_Undefined_IQ.md           # null vs undefined
+└── chapter_02_JS_Concepts/                   # empty placeholder
 ```
 
 ---
@@ -629,23 +646,64 @@ See [`08_UserInputs/README.md`](08_UserInputs/README.md) for a comparison of all
 
 ---
 
+## HackerRank — Practice Problems
+
+**Concept:** Solutions to HackerRank JavaScript challenges, implemented as standalone `processData` scripts that read from stdin and write grades/string outputs to stdout. These are drop-in solutions you can paste directly into HackerRank's online editor.
+
+**Why:** Bridges the gap between isolated syntax practice and timed, input-driven coding challenges — the same format used in technical screens.
+
+### Files
+
+| File | Problem |
+|------|---------|
+| [`Practice_IfElse.js`](HackerRank/Practice_IfElse.js) | Marks → grade (`AA` through `FF`) using an `if / else if` ladder |
+| [`Practice_Switch.js`](HackerRank/Practice_Switch.js) | Number 1–9 → English word (`ONE`…`NINE`) using a `switch` statement |
+
+Run them locally with stdin:
+
+```bash
+node HackerRank/Practice_IfElse.js
+# then type a number and press Ctrl+D (EOF)
+```
+
+---
+
 ## IQ_Notes — Reference Library
 
 Concept explainers, generated on demand via the prompt template in [`IQ_Notes/README.md`](IQ_Notes/README.md) — table breakdown, code walkthrough, pipeline diagram, TL;DR.
 
 | File | Covers |
 |------|--------|
-| [`SourceCode_ByteCode_Binary_IQ.md`](IQ_Notes/SourceCode_ByteCode_Binary_IQ.md) | Source code vs bytecode vs binary code (alternate reference) |
+| [`SourceCode_ByteCode_Binary_IQ.md`](IQ_Notes/SourceCode_ByteCode_Binary_IQ.md) | Source code vs bytecode vs binary (alternate naming) |
 | [`Source_Code_ByteCODE_Binary_IQ.md`](IQ_Notes/Source_Code_ByteCODE_Binary_IQ.md) | Source code vs bytecode vs binary/machine code, V8 compilation pipeline |
 | [`01_Identifier_Rules.md`](IQ_Notes/01_Identifier_Rules.md) | Legal identifier characters, case sensitivity, naming conventions |
 | [`02_Keyword_Notes.md`](IQ_Notes/02_Keyword_Notes.md) | Every JS reserved keyword, grouped by category |
 | [`03_commands_mac.md`](IQ_Notes/03_commands_mac.md) | VS Code keyboard shortcuts — macOS |
 | [`03_commands_win.md`](IQ_Notes/03_commands_win.md) | VS Code keyboard shortcuts — Windows |
-| [`README.md`](IQ_Notes/README.md) | IQ_Notes index and prompt template |
+| [`README.md`](IQ_Notes/README.md) | IQ_Notes index and reusable prompt template |
 | [`Identifier_vs_Literal_IQ.md`](chapter_01_Basics/IQ_Notes/Identifier_vs_Literal_IQ.md) | Identifier vs literal in JavaScript |
 | [`Null_vs_Undefined_IQ.md`](chapter_01_Basics/IQ_Notes/Null_vs_Undefined_IQ.md) | Null vs undefined in JavaScript |
 
 ---
 
-> **TL;DR:** This repo is a from-scratch JavaScript fundamentals course (`console.log` → scoping → identifiers → literals/numbers → operators → conditionals → switch statements → user input) plus a `00_chaptet_GENAI` folder for LLM automation-framework prompting, backed by an `IQ_Notes` library of standalone concept references anyone can regenerate with the same prompt template.
+## Local Additions
 
+This repo has a few extra files beyond the upstream source tree:
+
+- **Duplicate files:** `03_chapter_Identifier/` has spelling-corrected variants (`03_identifier_Rules.js`, `04_Identifer_Rules_Part2.js`, `06_Identifier_IQ.js`) from the upstream merge on a case-insensitive filesystem.
+- **Practice files in `05_chapter_Operator/`:** `Practice_IncrementOperator.js`, `Practice_Decrement_Operator.js`, `Practice_Decrement_Operator_Diff.js`, `Practice_Increment_Ternary_Operator.js` — expression evaluation walkthroughs for `a++ + ++a`, `a-- - --a`, and ternary with increment.
+- **`HackerRank/`:** Solutions to HackerRank JavaScript challenges (`if/else` grade ladder, `switch` number-to-word).
+- **`chapter_01_Basics/`:** Legacy directory overlapping with `01_chapter_Javascript/` and `02_chapter_Javascript/`, plus a nested `IQ_Notes/` with identifier and null vs undefined explainers.
+- **`chapter_02_JS_Concepts/`:** Empty placeholder for future content.
+- **IQ_Notes variants:** `SourceCode_ByteCode_Binary_IQ.md` and `IQ_Notes/README.md` (prompt template).
+- File numbering skips `19` — no file with that number exists.
+
+Run any script with `node <path>`:
+
+```bash
+node 01_chapter_Javascript/01_HelloWorld.js
+node 05_chapter_Operator/17_Logical_Operators.js
+node 06_chapter_Statement/37_IQ.js
+```
+
+> **TL;DR:** A from-scratch JavaScript fundamentals course (`console.log` → scoping → identifiers → literals/numbers → operators → conditionals → switch statements → user input) plus LLM automation-framework prompting and an `IQ_Notes` reference library.
