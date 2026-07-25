@@ -1,6 +1,6 @@
-# Learning Playwright 3x
+# LearnPlaywright3x — JavaScript Fundamentals & Automation Learning Repo
 
-A structured journey through JavaScript fundamentals, building toward Playwright automation. Covers first principles (variables, identifiers, operators) through control flow (statements, switch, user input, loops, arrays), with interview-style IQ notes and MCQ self-test questions as reference.
+A learning repository tracking JavaScript fundamentals from first principles, alongside RICE-prompt notes for automation framework generation and a growing `IQ_Notes` reference library (interview-style concept explainers).
 
 ---
 
@@ -96,13 +96,7 @@ LearnPlaywright3x/
 │   ├── 45_IQ2.js                             # switch(true) range matching
 │   ├── 46_IQ3.js                             # duplicate case behavior
 │   └── 47_IQ4.js                             # strict case matching
-├── 08_UserInputs/
-│   ├── README.md                             # input methods and run instructions
-│   ├── 48_JS.js                              # browser prompt input
-│   ├── 49_Node_UI.js                         # Node.js readline input
-│   ├── 50_Prompt.js                          # prompt-sync package input
-│   └── 51_Fs.js                              # stdin input with fs.readFileSync
-├── 08_chapter_UserInputs/                    # upstream renamed directory
+├── 08_chapter_UserInputs/
 │   ├── README.md                             # input methods and run instructions
 │   ├── 48_JS.js                              # browser prompt input
 │   ├── 49_Node_UI.js                         # Node.js readline input
@@ -134,16 +128,15 @@ LearnPlaywright3x/
 ├── HackerRank/
 │   ├── Practice_IfElse.js                    # if/else ladder — marks to grade
 │   └── Practice_Switch.js                    # switch — number to English word
+├── MCQ/
+│   └── Array_MCQ.md                          # array practice multiple-choice questions
 ├── IQ_Notes/
 │   ├── README.md                             # reusable prompt template for new IQ notes
-│   ├── SourceCode_ByteCode_Binary_IQ.md      # source vs bytecode vs binary (alternate)
 │   ├── Source_Code_ByteCODE_Binary_IQ.md     # source vs bytecode vs machine code
 │   ├── 01_Identifier_Rules.md                # identifier rules reference
 │   ├── 02_Keyword_Notes.md                   # all JS reserved keywords by category
 │   ├── 03_commands_mac.md                    # VS Code shortcuts — macOS
 │   └── 03_commands_win.md                    # VS Code shortcuts — Windows
-├── MCQ/
-│   └── Array_MCQ.md                          # array practice multiple-choice questions
 ├── chapter_01_Basics/
 │   ├── 01_HelloWorld.js                      # console.log (legacy copy)
 │   ├── 02_let_concept.js                     # simpler let example
@@ -676,7 +669,7 @@ rl.question("Enter a number: ", (input) => {
 });
 ```
 
-See [`08_UserInputs/README.md`](08_UserInputs/README.md) for a comparison of all four input methods and their run commands.
+See [`08_chapter_UserInputs/README.md`](08_chapter_UserInputs/README.md) for a comparison of all four input methods and their run commands.
 
 ---
 
@@ -820,15 +813,11 @@ Concept explainers, generated on demand via the prompt template in [`IQ_Notes/RE
 
 | File | Covers |
 |------|--------|
-| [`SourceCode_ByteCode_Binary_IQ.md`](IQ_Notes/SourceCode_ByteCode_Binary_IQ.md) | Source code vs bytecode vs binary (alternate naming) |
 | [`Source_Code_ByteCODE_Binary_IQ.md`](IQ_Notes/Source_Code_ByteCODE_Binary_IQ.md) | Source code vs bytecode vs binary/machine code, V8 compilation pipeline |
 | [`01_Identifier_Rules.md`](IQ_Notes/01_Identifier_Rules.md) | Legal identifier characters, case sensitivity, naming conventions |
 | [`02_Keyword_Notes.md`](IQ_Notes/02_Keyword_Notes.md) | Every JS reserved keyword, grouped by category |
 | [`03_commands_mac.md`](IQ_Notes/03_commands_mac.md) | VS Code keyboard shortcuts — macOS |
 | [`03_commands_win.md`](IQ_Notes/03_commands_win.md) | VS Code keyboard shortcuts — Windows |
-| [`README.md`](IQ_Notes/README.md) | IQ_Notes index and reusable prompt template |
-| [`Identifier_vs_Literal_IQ.md`](chapter_01_Basics/IQ_Notes/Identifier_vs_Literal_IQ.md) | Identifier vs literal in JavaScript |
-| [`Null_vs_Undefined_IQ.md`](chapter_01_Basics/IQ_Notes/Null_vs_Undefined_IQ.md) | Null vs undefined in JavaScript |
 
 ---
 
