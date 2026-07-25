@@ -1,6 +1,6 @@
 # Learning Playwright 3x
 
-A structured journey through JavaScript fundamentals, building toward Playwright automation. Covers first principles (variables, identifiers, operators) through control flow (statements, switch, user input), with interview-style IQ notes as reference.
+A structured journey through JavaScript fundamentals, building toward Playwright automation. Covers first principles (variables, identifiers, operators) through control flow (statements, switch, user input, loops, arrays), with interview-style IQ notes and MCQ self-test questions as reference.
 
 ---
 
@@ -22,6 +22,9 @@ A structured journey through JavaScript fundamentals, building toward Playwright
 - [06 Statements and Conditionals](#06-statements-and-conditionals)
 - [07 Switch Statements](#07-switch-statements)
 - [08 User Input](#08-user-input)
+- [09 Loops](#09-loops)
+- [10 — Arrays](#10--arrays)
+- [MCQ — Practice Questions](#mcq--practice-questions)
 - [HackerRank — Practice Problems](#hackerrank--practice-problems)
 - [IQ_Notes — Reference Library](#iq_notes--reference-library)
 - [Local Additions](#local-additions)
@@ -99,6 +102,35 @@ LearnPlaywright3x/
 │   ├── 49_Node_UI.js                         # Node.js readline input
 │   ├── 50_Prompt.js                          # prompt-sync package input
 │   └── 51_Fs.js                              # stdin input with fs.readFileSync
+├── 08_chapter_UserInputs/                    # upstream renamed directory
+│   ├── README.md                             # input methods and run instructions
+│   ├── 48_JS.js                              # browser prompt input
+│   ├── 49_Node_UI.js                         # Node.js readline input
+│   ├── 50_Prompt.js                          # prompt-sync package input
+│   └── 51_Fs.js                              # stdin input with fs.readFileSync
+├── 09_chapter_Loops/
+│   ├── 52_Loop.js                            # repeated statements without a loop
+│   ├── 53_For_Loop.js                        # for-loop syntax and execution
+│   ├── 54_Increment.js                       # prefix increment review
+│   ├── 55_For_Loops.js                       # inclusive for-loop range
+│   ├── 56_For_Loops2.js                      # conditions inside a for loop
+│   ├── 57_While.js                           # equivalent for and while loops
+│   ├── 58_While.js                           # bounded retry loop
+│   ├── 59_Modie.js                           # while-loop repetition
+│   ├── 60_While_Vs_For.js                    # while(true) with break
+│   ├── 61_Do_While.js                        # do-while retry example
+│   ├── 62_DoWhile_vs_While.js                # first-run behavior comparison
+│   └── 63_NestedFor_lOOP.js                  # nested loops and index pairs
+├── 10_chapter_Arrays/
+│   ├── 64_Array.js                           # indexing, .at(-1), length, negative index
+│   ├── 65_Array.js                           # length, out-of-bounds returns undefined
+│   ├── 66_Array_Creation.js                  # literal, new Array, Array.of, Array.from
+│   ├── 67_Array_Access_Modify.js             # bracket access, .at(), assign by index
+│   ├── 68_Arrays_Adding_Remove.js            # push/pop/unshift/shift/splice
+│   ├── 69_Array_REAL.js                      # real loop over a browser list
+│   ├── 70_Array_Searching.js                 # indexOf, lastIndexOf, includes
+│   ├── 71_IQ.js                              # find, findIndex, findLast, findLastIndex
+│   └── 72_Array_Interate.js                  # for, for...of, forEach, entries, for...in
 ├── HackerRank/
 │   ├── Practice_IfElse.js                    # if/else ladder — marks to grade
 │   └── Practice_Switch.js                    # switch — number to English word
@@ -110,6 +142,8 @@ LearnPlaywright3x/
 │   ├── 02_Keyword_Notes.md                   # all JS reserved keywords by category
 │   ├── 03_commands_mac.md                    # VS Code shortcuts — macOS
 │   └── 03_commands_win.md                    # VS Code shortcuts — Windows
+├── MCQ/
+│   └── Array_MCQ.md                          # array practice multiple-choice questions
 ├── chapter_01_Basics/
 │   ├── 01_HelloWorld.js                      # console.log (legacy copy)
 │   ├── 02_let_concept.js                     # simpler let example
@@ -646,6 +680,118 @@ See [`08_UserInputs/README.md`](08_UserInputs/README.md) for a comparison of all
 
 ---
 
+### 09 Loops
+
+**Concept:** Loops repeat a block of code while a condition remains true. This chapter progresses from manual repetition to `for`, `while`, and `do...while`, then covers `break` and nested loops.
+
+**Why:** Loops are useful for retry logic, iterating test data, repeating assertions, and processing collections. Choosing the right loop makes the stopping condition explicit and prevents accidental infinite execution.
+
+**Q&A — why use this?**
+- **Q: When should I use a `for` loop?** A: When the initialization, condition, and update are known up front, especially for a fixed number of iterations.
+- **Q: When should I use a `while` loop?** A: When repetition depends mainly on a condition, such as retrying until a limit or state change.
+- **Q: What makes `do...while` different?** A: Its body runs once before the condition is checked, so it always executes at least once.
+- **Q: What does `break` do?** A: It immediately exits the nearest loop.
+
+```js
+// Fixed number of iterations
+for (let i = 0; i < 3; i++) {
+    console.log(i);
+}
+
+// Condition-controlled repetition
+let attempts = 0;
+while (attempts < 3) {
+    console.log("Attempt", attempts);
+    attempts++;
+}
+
+// Always runs at least once
+let value = 10;
+do {
+    console.log(value);
+    value++;
+} while (value < 10);
+```
+
+---
+
+### 10 — Arrays
+
+**Concept:** An array is an ordered, zero-indexed list that holds many values in one variable. This chapter covers creation, access with brackets and `.at()`, adding/removing with `push`/`pop`/`unshift`/`shift`/`splice`, searching with `indexOf`/`includes`/`find`, and every way to iterate.
+
+**Why:** Test data is almost always a list, browsers to run, expected results, form rows, API records. Arrays are how you store and walk that data, so every loop, filter, and assertion over a collection starts here.
+
+**Q&A — why use this?**
+- **Q: What does negative indexing need?** A: Bracket access does NOT support negatives (`arr[-1]` is `undefined`); use `arr.at(-1)` to read from the end. `.at(-1)` is the last item, `.at(-2)` the second last.
+- **Q: How is `splice` different from `slice`?** A: `splice(start, deleteCount, ...items)` mutates the array in place and can remove and insert at once; `slice` returns a copy and never mutates. `push`/`pop` work at the end, `unshift`/`shift` at the start.
+- **Q: When do I use `find` vs `indexOf` vs `includes`?** A: `includes(value)` returns a boolean, `indexOf(value)` returns the first position (or `-1`), and `find(fn)` returns the first element matching a test function (`findIndex` returns its position).
+
+```mermaid
+flowchart TD
+    A["Array [a, b, c]"] --> Read{Reading}
+    Read -->|by position| Br["arr[0], arr.at&#40;-1&#41;"]
+    Read -->|search value| Se["indexOf, includes, find"]
+    A --> Write{Changing}
+    Write -->|end| E["push / pop"]
+    Write -->|start| S["unshift / shift"]
+    Write -->|anywhere| Sp["splice&#40;i, del, ...add&#41;"]
+    A --> It["Iterate: for, for...of, forEach, entries"]
+```
+
+```js
+let browsers = ["chrome", "firefox", "webkit"];
+
+// Access — brackets are zero-indexed; .at() allows negatives
+console.log(browsers[0]);      // "chrome"
+console.log(browsers.at(-1));  // "webkit"  (last)
+console.log(browsers[-1]);     // undefined (brackets: no negatives)
+
+// splice(start, deleteCount, ...itemsToAdd) — mutates in place
+let arr = [1, 2, 3, 5, 6];
+arr.splice(2, 1);          // remove 1 at index 2 -> [1, 2, 5, 6]
+arr.splice(2, 0, 99);      // insert 99 at index 2 -> [1, 2, 99, 5, 6]
+arr.splice(1, 2, 10, 20);  // replace 2 with 10,20 -> [1, 10, 20, 5, 6]
+
+// Search
+let results = ["pass", "fail", "pass", "error"];
+console.log(results.indexOf("fail"));   // 1
+console.log(results.includes("skip"));  // false
+
+// Find first match by a test function
+let nums = [10, 25, 30, 45];
+console.log(nums.find(n => n > 20));      // 25
+console.log(nums.findIndex(n => n > 20)); // 1
+
+// Iterate — for...of for values, entries() for index + value
+for (let [i, browser] of browsers.entries()) {
+    console.log(i, browser);
+}
+```
+
+| Method | Mutates? | Returns |
+|--------|:--------:|---------|
+| `push` / `unshift` | Yes | new length |
+| `pop` / `shift` | Yes | removed element |
+| `splice` | Yes | array of removed elements |
+| `slice` | No | shallow copy |
+| `indexOf` / `findIndex` | No | index or `-1` |
+| `find` | No | element or `undefined` |
+
+---
+
+## MCQ — Practice Questions
+
+**Concept:** [`MCQ/Array_MCQ.md`](MCQ/Array_MCQ.md) is a growing bank of short multiple-choice questions to self-test the concepts from each chapter, starting with arrays.
+
+**Why:** Recall under exam-style pressure is different from reading, quick MCQs surface the gaps (like `push` returning the new length, not the array) before an interview does.
+
+**Q&A — why use this?**
+- **Q: What does `arr.push(4)` return?** A: The new **length** of the array, not the array itself, `[1,2,3].push(4)` returns `4`.
+- **Q: Why is `[9, 1, 2].sort()` result `1, 2, 9` here but risky in general?** A: Default `sort()` compares elements as **strings**, it happens to look right for single digits but `[9, 1, 20].sort()` gives `1, 20, 9`. Pass a comparator: `sort((a, b) => a - b)`.
+- **Q: How do I run these?** A: They are pen-and-paper style, predict the output first, then verify by pasting the snippet into `node`.
+
+---
+
 ## HackerRank — Practice Problems
 
 **Concept:** Solutions to HackerRank JavaScript challenges, implemented as standalone `processData` scripts that read from stdin and write grades/string outputs to stdout. These are drop-in solutions you can paste directly into HackerRank's online editor.
@@ -704,6 +850,13 @@ Run any script with `node <path>`:
 node 01_chapter_Javascript/01_HelloWorld.js
 node 05_chapter_Operator/17_Logical_Operators.js
 node 06_chapter_Statement/37_IQ.js
+node 09_chapter_Loops/53_For_Loop.js
+node 10_chapter_Arrays/64_Array.js
 ```
 
-> **TL;DR:** A from-scratch JavaScript fundamentals course (`console.log` → scoping → identifiers → literals/numbers → operators → conditionals → switch statements → user input) plus LLM automation-framework prompting and an `IQ_Notes` reference library.
+- **`08_chapter_UserInputs/`:** Duplicate of `08_UserInputs/` matching upstream's renamed directory.
+- **`09_chapter_Loops/`:** Synced from upstream — covers `for`, `while`, `do...while`, and nested loops.
+- **`10_chapter_Arrays/`:** Synced from upstream — covers array creation, access, mutation, searching, and iteration.
+- **`MCQ/`:** Synced from upstream — multiple-choice self-test questions starting with arrays.
+
+> **TL;DR:** A from-scratch JavaScript fundamentals course (`console.log` → scoping → identifiers → literals/numbers → operators → conditionals → switch statements → user input → loops → arrays) plus LLM automation-framework prompting, MCQ self-test bank, and an `IQ_Notes` reference library.
