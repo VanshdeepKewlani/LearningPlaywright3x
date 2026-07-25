@@ -843,7 +843,6 @@ node 09_chapter_Loops/53_For_Loop.js
 node 10_chapter_Arrays/64_Array.js
 ```
 
-- **`08_chapter_UserInputs/`:** Duplicate of `08_UserInputs/` matching upstream's renamed directory.
 - **`09_chapter_Loops/`:** Synced from upstream — covers `for`, `while`, `do...while`, and nested loops.
 - **`10_chapter_Arrays/`:** Synced from upstream — covers array creation, access, mutation, searching, and iteration.
 - **`MCQ/`:** Synced from upstream — multiple-choice self-test questions starting with arrays.
