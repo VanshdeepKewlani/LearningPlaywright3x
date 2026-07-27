@@ -124,7 +124,10 @@ LearnPlaywright3x/
 │   ├── 69_Array_REAL.js                      # real loop over a browser list
 │   ├── 70_Array_Searching.js                 # indexOf, lastIndexOf, includes
 │   ├── 71_IQ.js                              # find, findIndex, findLast, findLastIndex
-│   └── 72_Array_Interate.js                  # for, for...of, forEach, entries, for...in
+│   ├── 72_Array_Interate.js                  # for, for...of, forEach, entries, for...in
+│   ├── ArrayFunctions.md                     # quick reference for common array methods
+│   ├── Practice_ArrayFunctions.js            # runnable examples for array methods
+│   └── Practice_CodingPractice.js            # coding-practice exercise using stdin input
 ├── HackerRank/
 │   ├── Practice_IfElse.js                    # if/else ladder — marks to grade
 │   └── Practice_Switch.js                    # switch — number to English word
@@ -827,6 +830,7 @@ This repo has a few extra files beyond the upstream source tree:
 
 - **Duplicate files:** `03_chapter_Identifier/` has spelling-corrected variants (`03_identifier_Rules.js`, `04_Identifer_Rules_Part2.js`, `06_Identifier_IQ.js`) from the upstream merge on a case-insensitive filesystem.
 - **Practice files in `05_chapter_Operator/`:** `Practice_IncrementOperator.js`, `Practice_Decrement_Operator.js`, `Practice_Decrement_Operator_Diff.js`, `Practice_Increment_Ternary_Operator.js` — expression evaluation walkthroughs for `a++ + ++a`, `a-- - --a`, and ternary with increment.
+- **Array practice notes in `10_chapter_Arrays/`:** `ArrayFunctions.md`, `Practice_ArrayFunctions.js`, and `Practice_CodingPractice.js` — a compact method reference plus runnable examples and stdin-based practice.
 - **`HackerRank/`:** Solutions to HackerRank JavaScript challenges (`if/else` grade ladder, `switch` number-to-word).
 - **`chapter_01_Basics/`:** Legacy directory overlapping with `01_chapter_Javascript/` and `02_chapter_Javascript/`, plus a nested `IQ_Notes/` with identifier and null vs undefined explainers.
 - **`chapter_02_JS_Concepts/`:** Empty placeholder for future content.

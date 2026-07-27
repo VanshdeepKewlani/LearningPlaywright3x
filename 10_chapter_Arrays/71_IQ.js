@@ -6,5 +6,5 @@ console.log(result);
 let index = nums.findIndex(n => n > 20);
 console.log(index);
 
-nums.findLast(n => n > 20); //  45
-nums.findLastIndex(n => n > 20); // 3
+console.log(nums.findLast(n => n > 20)); //  45
+console.log(nums.findLastIndex(n => n > 20)); // 3
