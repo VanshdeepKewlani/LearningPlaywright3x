@@ -1,4 +1,4 @@
-// This is sinle comment this will be ignore 
+// This is single comment this will be ignore 
 // this line will be not executed
 
 /*

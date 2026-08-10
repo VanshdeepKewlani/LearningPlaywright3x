@@ -5,10 +5,10 @@
 
 // = -> Assignment opearator
 // == -> losse comparsion ( sikh vs hindu )
-// === -> strict comparsion ( sikh vs hindu , languge, living)
+// === -> strict comparsion ( sikh vs hindu , language, living)
 
 
-// Domiz = Pizz hut - Pizza Lose check
+// Dominoz = Pizza hut - Pizza Lose check
 // === -> Strict Comparsion ->
 
 // > , < , >= , <= 

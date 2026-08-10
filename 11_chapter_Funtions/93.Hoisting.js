@@ -7,7 +7,7 @@ console.log(a);
 // var a  = undefined;
 // var b  = undefined;
 console.log(a); // undefind
-var a = "Pramod";
+var a = "Pramod1";
 console.log(a); // changed
 
 // Hoisting does NOT physically move your code. 

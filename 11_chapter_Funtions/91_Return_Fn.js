@@ -10,9 +10,9 @@ function getStatus(code) {
     }
 }
 
-getStatus(200); 
-getStatus(404);
-getStatus(500); 
+console.log(getStatus(200)); 
+console.log(getStatus(404));
+console.log(getStatus(500)); 
 
 
 // Returns nothing → undefined
@@ -28,3 +28,5 @@ function aaa() {
     return [2, 2, 3, 5, 4];
     /// return {"name : pramod"}; - object
 }
+
+console.log(aaa());

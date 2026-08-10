@@ -52,15 +52,16 @@ var a = 100;
 
 const pi = 3.14;
 console.log(pi);
-pi = 3.14159; // Assignment to constant variable.
+// pi = 3.14159; // Assignment to constant variable.
 
-{
+// {
 
-}
+// }
 
 
-const a = [1,2,3];
-a.push(10);
+const a1 = [1,2,3];
+a1.push(10);
+console.log(a1);
 
 
 function adasd(){

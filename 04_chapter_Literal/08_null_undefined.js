@@ -26,13 +26,13 @@
 // --------------------------------------------------------
 
 let userName; // declared but not assigned
-console.log(userName);
-console.log(typeof userName);
+console.log("userName:", userName);
+console.log("Type of userName:", typeof userName);
 
-// function greet() {
-//     // no return statement
-// }
-// console.log(greet()); 
+function greet() {
+    // no return statement
+}
+console.log(greet()); 
 
 let x;
 x = 10;

@@ -18,7 +18,7 @@ let a1_b2 = "mixed letters digits underscore";
 // Keyword
 // let class = "invalid"; 
 // let const = "invalid";
-//let function = "invalid";
+// let function = "invalid";
 let Function = "invalid";
 
 let MyVar = "uppercase M";

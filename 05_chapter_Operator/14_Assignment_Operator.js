@@ -11,6 +11,9 @@ console.log(x1);
 x1 -= 3; // x1 = x1-3;
 console.log(x1);
 
-x *= 2;        // x = x * 2 → 24
-x /= 4;        // x = x / 4 → 6
-x %= 4; 
+x1 *= 2;        // x1 = x1 * 2 → 24
+console.log("x1 *=2", x1); 
+x1 /= 4;        // x1 = x1 / 4 → 6
+console.log("x1 /=4", x1);
+x1 %= 4; 
+console.log("x1 %=4", x1); // x1 = x1 % 4 

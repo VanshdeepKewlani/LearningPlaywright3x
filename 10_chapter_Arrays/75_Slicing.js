@@ -16,7 +16,10 @@ console.log(arr.slice(-2)); // Right side.
 console.log(arr.slice(-3));
 
 console.log(arr.slice(0));
+console.log("-------------------");
 
 console.log(arr.slice(-5));
+
+console.log("-------------------");
 
 console.log(arr.slice(-3, -5));

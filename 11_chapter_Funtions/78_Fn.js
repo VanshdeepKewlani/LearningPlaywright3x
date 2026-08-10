@@ -14,5 +14,5 @@ function getResult(score){
 }
 
 // Calling
-getResult(85); // Pass
-getResult(45); // Fail
+console.log(getResult(85)); // Pass
+console.log(getResult(45)); // Fail

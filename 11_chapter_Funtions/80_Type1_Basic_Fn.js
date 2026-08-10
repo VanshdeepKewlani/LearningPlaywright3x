@@ -11,7 +11,7 @@ greet();
 greet();
 
 let output = greet();
-console.log(output);
+console.log("output is" , output);
 
 
 function openBrowser(){
@@ -19,3 +19,5 @@ function openBrowser(){
     // open the brower
     
 }
+
+openBrowser();
