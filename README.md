@@ -1,5 +1,7 @@
 # LearnPlaywright3x — JavaScript Fundamentals & Automation Learning Repo
 
+> Synced with upstream: https://github.com/PramodDutta/LearningPlaywright3x (2026-08-14)
+
 A learning repository tracking JavaScript fundamentals from first principles, alongside RICE-prompt notes for automation framework generation and a growing `IQ_Notes` reference library (interview-style concept explainers).
 
 ---
