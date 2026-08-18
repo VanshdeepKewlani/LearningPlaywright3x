@@ -2,8 +2,10 @@ function doubleMe(a){
     return a*2;
 }
 
+console.log(doubleMe(8));
+
 const doubtA = (a)=> a*2;
-doubtA(10);
+console.log(doubtA(10));
 
 const getEnv = () => "staging";
 console.log(getEnv());

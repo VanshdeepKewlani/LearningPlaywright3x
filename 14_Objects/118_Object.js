@@ -4,3 +4,7 @@ const user = {
         return this.name;
     }
 }
+
+console.log(user);
+console.log("----------------------")
+console.log(user.printName());

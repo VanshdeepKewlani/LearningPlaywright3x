@@ -20,7 +20,8 @@ let report = `
   Duration: 320ms
 `;
 
+console.log(report);
 console.log(String(200));
-String(true); //  "true"
-String(null); // "null"
-String([1, 2]); // "[1,2]"
+console.log(String(true)); //  "true"
+console.log(String(null)); // "null"
+console.log(String([1, 2])); // "[1,2]"

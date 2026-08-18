@@ -4,7 +4,7 @@ function test(dadad, callMewhenDone){
 }
 
 test("Verify the login page is working", async (page) =>{
-
+    console.log("test invocation");
 });
 
 function garimaStory(item, callMeWhenStoreIsEmpty){

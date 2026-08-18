@@ -10,7 +10,7 @@ function setupConfig() {
 
 setupConfig();
 console.log(env);
-console.log(timeout); // ❌ ReferenceError — not accessible outside
+// console.log(timeout); // ❌ ReferenceError — not accessible outside
 
 
 // ---- 
@@ -29,3 +29,6 @@ function outer() {
     console.log(y); // ❌ outer cannot access inner's variables
 
 }
+
+console.log("g_x is " + g_x);
+outer();

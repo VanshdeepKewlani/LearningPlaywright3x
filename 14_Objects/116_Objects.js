@@ -5,7 +5,7 @@
 // let a1 = { status: 'pass' };
 // console.log(a1.status);
 
-// keys are case sensitive.
+// // keys are case sensitive.
 // let a22 = { status: "pass", Status: "fail" };
 // console.log(a22["status"]);
 // console.log(a22["Status"]);

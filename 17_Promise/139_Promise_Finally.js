@@ -1,6 +1,6 @@
 let apiCall = new Promise(function(resolve,reject){
     resolve({ status: 200});
-    //reject("error");
+    // reject("error");
 
 })
 
