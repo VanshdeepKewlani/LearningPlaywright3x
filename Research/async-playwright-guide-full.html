@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Async JavaScript & Playwright — Full Field Guide</title>
+<style>
+  :root{
+    --bg: #0f1115;
+    --panel: #161922;
+    --panel-2: #1c202b;
+    --border: #2a2f3d;
+    --text: #e7e9ee;
+    --muted: #9aa1b2;
+    --accent: #5ec9c0;
+    --accent-2: #f2a65a;
+    --code-kw: #c792ea;
+    --code-str: #c3e88d;
+    --code-fn: #82aaff;
+    --code-com: #6b7280;
+    --code-num: #f78c6c;
+    --good: #7fd88f;
+    --bad: #ef6b6b;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(1200px 600px at 80% -10%, #1a2230 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    padding-bottom: 80px;
+  }
+  a{color:var(--accent);}
+
+  header.hero{
+    padding: 64px 24px 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(94,201,192,0.1);
+    border: 1px solid rgba(94,201,192,0.3);
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  h1{
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.1;
+    margin: 20px 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .sub{
+    color: var(--muted);
+    font-size: 16.5px;
+    max-width: 680px;
+  }
+
+  nav.toc{
+    max-width: 1000px;
+    margin: 0 auto 32px;
+    padding: 0 24px;
+  }
+  .toc-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .toc-grid a{
+    display:block;
+    text-decoration:none;
+    color: var(--text);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .toc-grid a:hover{ border-color: var(--accent); transform: translateY(-1px); }
+  .toc-grid .n{ color: var(--accent-2); font-family: var(--mono); margin-right:8px; }
+
+  main{
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section.topic{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 28px;
+    scroll-margin-top: 24px;
+  }
+  section.topic h2{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    font-size: 23px;
+    margin: 0 0 8px;
+  }
+  section.topic h2 .idx{
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--bg);
+    background: var(--accent);
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display:flex; align-items:center; justify-content:center;
+    flex: none;
+  }
+  section.topic p.lead{
+    color: var(--muted);
+    margin: 0 0 20px;
+    font-size: 15.5px;
+  }
+  h3.sub-h{
+    font-size: 13.5px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--accent-2);
+    margin: 24px 0 10px;
+  }
+  h4.pc-h{
+    font-size: 14.5px;
+    margin: 0 0 4px;
+    color: var(--text);
+  }
+
+  pre{
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 13px;
+    margin: 0 0 14px;
+  }
+  code{ font-family: var(--mono); }
+  .kw{color:var(--code-kw);}
+  .str{color:var(--code-str);}
+  .fn{color:var(--code-fn);}
+  .com{color:var(--code-com); font-style: italic;}
+  .num{color:var(--code-num);}
+
+  .callout{
+    display:flex;
+    gap: 12px;
+    background: rgba(242,166,90,0.08);
+    border: 1px solid rgba(242,166,90,0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    margin: 16px 0;
+  }
+  .callout.warn{
+    background: rgba(239,107,107,0.08);
+    border-color: rgba(239,107,107,0.3);
+  }
+  .callout .tag{
+    font-family: var(--mono);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--accent-2);
+    flex: none;
+  }
+  .callout.warn .tag{ color: var(--bad); }
+
+  /* Pros / Cons */
+  .proscons-wrap{
+    margin-top: 26px;
+  }
+  .pc-section-title{
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 700;
+    margin: 22px 0 12px;
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+  .pc-section-title.pros{ color: var(--good); }
+  .pc-section-title.cons{ color: var(--bad); }
+  .dot{
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display:inline-block;
+  }
+  .pc-section-title.pros .dot{ background: var(--good); }
+  .pc-section-title.cons .dot{ background: var(--bad); }
+
+  .pc-item{
+    border-radius: 12px;
+    padding: 16px 18px 4px;
+    border: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+  .pc-item.pros{
+    background: rgba(127,216,143,0.05);
+    border-color: rgba(127,216,143,0.25);
+  }
+  .pc-item.cons{
+    background: rgba(239,107,107,0.05);
+    border-color: rgba(239,107,107,0.25);
+  }
+  .pc-item p{
+    font-size: 13.8px;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  .pc-item pre{
+    margin-bottom: 14px;
+  }
+
+  ul.points{ margin: 0 0 16px; padding-left: 20px; }
+  ul.points li{ margin-bottom: 6px; font-size: 14.5px; }
+
+  .pill-row{ display:flex; flex-wrap:wrap; gap:8px; margin: 0 0 16px; }
+  .pill{
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  footer{
+    max-width: 1000px;
+    margin: 40px auto 0;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow">JS Concurrency · Playwright</span>
+  <h1>Async JavaScript, from callbacks to Promise.race</h1>
+  <p class="sub">A working reference for the six building blocks you'll use constantly when writing Playwright tests and automation scripts — with runnable examples, and every pro/con backed by its own short code sample.</p>
+</header>
+
+<nav class="toc">
+  <div class="toc-grid">
+    <a href="#callback"><span class="n">01</span>Callback</a>
+    <a href="#new-promise"><span class="n">02</span>new Promise</a>
+    <a href="#async"><span class="n">03</span>Async</a>
+    <a href="#await"><span class="n">04</span>await</a>
+    <a href="#promise-all"><span class="n">05</span>Promise.all</a>
+    <a href="#promise-race"><span class="n">06</span>Promise.race</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- CALLBACK -->
+  <section class="topic" id="callback">
+    <h2><span class="idx">1</span>Callback</h2>
+    <p class="lead">A callback is a function passed into another function to be run later, usually once some work finishes. It's the original async pattern in JavaScript, predating Promises.</p>
+
+    <h3 class="sub-h">Core example</h3>
+    <pre><code><span class="kw">function</span> <span class="fn">loadUser</span>(id, callback) {
+  setTimeout(() => {
+    <span class="kw">const</span> user = { id, name: <span class="str">"Asha"</span> };
+    callback(<span class="kw">null</span>, user); <span class="com">// (error, result) convention</span>
+  }, <span class="num">500</span>);
+}
+
+<span class="fn">loadUser</span>(<span class="num">1</span>, (err, user) => {
+  <span class="kw">if</span> (err) <span class="kw">return</span> console.error(err);
+  console.log(<span class="str">"Loaded:"</span>, user);
+});</code></pre>
+
+    <h3 class="sub-h">In Playwright</h3>
+    <pre><code><span class="com">// callback fires every time the page logs to console</span>
+page.<span class="fn">on</span>(<span class="str">'console'</span>, msg => console.log(<span class="str">`Page log: </span>${msg.text()}<span class="str">`</span>));
+
+<span class="com">// callback used to intercept and mock network requests</span>
+<span class="kw">await</span> page.<span class="fn">route</span>(<span class="str">'**/api/prices'</span>, route => {
+  route.<span class="fn">fulfill</span>({ json: { price: <span class="num">42</span> } });
+});</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Handles repeated events naturally</h4>
+        <p>Unlike a Promise (which settles once), a callback can be invoked many times — a great fit for ongoing page events.</p>
+        <pre><code>page.<span class="fn">on</span>(<span class="str">'console'</span>, msg => {
+  <span class="com">// fires on EVERY console.log in the page, indefinitely</span>
+  console.log(msg.text());
+});</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Zero language overhead</h4>
+        <p>No special syntax needed — plain functions work in any JS environment, even very old runtimes.</p>
+        <pre><code><span class="kw">function</span> <span class="fn">retry</span>(fn, times, done) {
+  fn((err, result) => {
+    <span class="kw">if</span> (err && times > <span class="num">0</span>) <span class="kw">return</span> <span class="fn">retry</span>(fn, times - <span class="num">1</span>, done);
+    done(err, result);
+  });
+}</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Callback hell</h4>
+        <p>Nesting callbacks to sequence steps quickly becomes unreadable.</p>
+        <pre><code><span class="fn">login</span>(user, (err, session) => {
+  <span class="fn">loadDashboard</span>(session, (err, data) => {
+    <span class="fn">loadWidgets</span>(data, (err, widgets) => {
+      <span class="com">// three levels deep already, and growing</span>
+      render(widgets);
+    });
+  });
+});</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Inconsistent, manual error handling</h4>
+        <p>The "(err, result)" convention isn't enforced by the language — nothing stops you from forgetting the check.</p>
+        <pre><code><span class="fn">loadUser</span>(<span class="num">1</span>, (err, user) => {
+  <span class="com">// oops — forgot to check `err` here</span>
+  console.log(user.name); <span class="com">// throws if err was set and user is undefined</span>
+});</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">No built-in composition</h4>
+        <p>There's no callback equivalent of <code>Promise.all</code> — running things in parallel means hand-rolling a counter.</p>
+        <pre><code><span class="kw">let</span> remaining = <span class="num">2</span>, results = {};
+<span class="fn">loadUser</span>(<span class="num">1</span>, (e, u) => { results.user = u; <span class="kw">if</span> (--remaining === <span class="num">0</span>) done(); });
+<span class="fn">loadOrders</span>(<span class="num">1</span>, (e, o) => { results.orders = o; <span class="kw">if</span> (--remaining === <span class="num">0</span>) done(); });</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW PROMISE -->
+  <section class="topic" id="new-promise">
+    <h2><span class="idx">2</span>new Promise</h2>
+    <p class="lead"><code>new Promise(executor)</code> wraps a one-time async operation. The executor receives <code>resolve</code> and <code>reject</code>, called when the work succeeds or fails.</p>
+
+    <h3 class="sub-h">Core example</h3>
+    <pre><code><span class="kw">function</span> <span class="fn">wait</span>(ms) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="kw">if</span> (ms < <span class="num">0</span>) <span class="kw">return</span> reject(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">"ms must be positive"</span>));
+    setTimeout(() => resolve(<span class="str">`waited </span>${ms}<span class="str">ms`</span>), ms);
+  });
+}</code></pre>
+
+    <h3 class="sub-h">In Playwright — custom polling</h3>
+    <pre><code><span class="kw">function</span> <span class="fn">waitForJobToFinish</span>(jobId) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="kw">const</span> interval = setInterval(<span class="kw">async</span> () => {
+      <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`/jobs/</span>${jobId}<span class="str">`</span>);
+      <span class="kw">const</span> { status } = <span class="kw">await</span> res.<span class="fn">json</span>();
+      <span class="kw">if</span> (status === <span class="str">'done'</span>) { clearInterval(interval); resolve(status); }
+      <span class="kw">if</span> (status === <span class="str">'failed'</span>) { clearInterval(interval); reject(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'Job failed'</span>)); }
+    }, <span class="num">500</span>);
+  });
+}</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Converts any callback API into an awaitable one</h4>
+        <p>You can "promisify" old-style callback functions so they compose with modern async/await code.</p>
+        <pre><code><span class="kw">function</span> <span class="fn">loadUserAsync</span>(id) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="fn">loadUser</span>(id, (err, user) => err ? reject(err) : resolve(user));
+  });
+}
+
+<span class="kw">const</span> user = <span class="kw">await</span> <span class="fn">loadUserAsync</span>(<span class="num">1</span>); <span class="com">// now awaitable!</span></code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Composable with the whole Promise toolkit</h4>
+        <p>Once wrapped, it plugs straight into <code>Promise.all</code>, <code>Promise.race</code>, and <code>await</code>.</p>
+        <pre><code><span class="kw">const</span> [a, b] = <span class="kw">await</span> Promise.<span class="fn">all</span>([<span class="fn">wait</span>(<span class="num">100</span>), <span class="fn">wait</span>(<span class="num">200</span>)]);</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">The "Promise constructor anti-pattern"</h4>
+        <p>Wrapping something that's already a Promise (like <code>fetch</code> or a Playwright call) in <code>new Promise</code> is redundant and error-prone.</p>
+        <pre><code><span class="com">// don't do this — fetch() is already a Promise</span>
+<span class="kw">function</span> <span class="fn">getData</span>() {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="fn">fetch</span>(<span class="str">'/api'</span>).then(resolve).catch(reject);
+  });
+}
+<span class="com">// just do: function getData() { return fetch('/api'); }</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Forgetting to settle leaves it hanging forever</h4>
+        <p>If no code path calls <code>resolve</code> or <code>reject</code>, the Promise never settles — and any <code>await</code> on it hangs indefinitely.</p>
+        <pre><code><span class="kw">function</span> <span class="fn">buggy</span>() {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="kw">if</span> (Math.random() > <span class="num">0.5</span>) resolve(<span class="str">'ok'</span>);
+    <span class="com">// no else branch — 50% of calls hang forever</span>
+  });
+}</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Async errors inside the executor don't auto-reject</h4>
+        <p>A thrown error inside a <code>setTimeout</code> callback won't be caught by the Promise — you must catch and reject manually.</p>
+        <pre><code><span class="kw">new</span> <span class="fn">Promise</span>((resolve, reject) => {
+  setTimeout(() => {
+    <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'boom'</span>); <span class="com">// NOT caught — becomes an unhandled exception</span>
+  }, <span class="num">100</span>);
+});</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASYNC -->
+  <section class="topic" id="async">
+    <h2><span class="idx">3</span>Async</h2>
+    <p class="lead">The <code>async</code> keyword marks a function as one that always returns a Promise, and unlocks <code>await</code> inside its body.</p>
+
+    <div class="pill-row">
+      <span class="pill">async function name() {}</span>
+      <span class="pill">const fn = async () => {}</span>
+      <span class="pill">test('...', async ({ page }) => {})</span>
+    </div>
+
+    <h3 class="sub-h">In Playwright</h3>
+    <pre><code>test(<span class="str">'user can log in'</span>, <span class="kw">async</span> ({ page }) => {
+  <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'https://example.com/login'</span>);
+  <span class="kw">await</span> page.<span class="fn">fill</span>(<span class="str">'#email'</span>, <span class="str">'user@test.com'</span>);
+  <span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'button[type="submit"]'</span>);
+  <span class="kw">await</span> expect(page.<span class="fn">locator</span>(<span class="str">'.welcome-banner'</span>)).<span class="fn">toBeVisible</span>();
+});</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Async code reads like synchronous code</h4>
+        <p>No <code>.then()</code> chains — each step is a plain statement.</p>
+        <pre><code><span class="kw">async function</span> <span class="fn">checkout</span>(page) {
+  <span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#add-to-cart'</span>);
+  <span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#checkout'</span>);
+  <span class="kw">return</span> page.<span class="fn">locator</span>(<span class="str">'#total'</span>).<span class="fn">textContent</span>();
+}</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Thrown errors become normal rejected Promises</h4>
+        <p>You can catch async errors with ordinary <code>try/catch</code>, no special API needed.</p>
+        <pre><code><span class="kw">async function</span> <span class="fn">risky</span>() {
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'failed'</span>);
+}
+
+<span class="fn">risky</span>().catch(err => console.log(err.message)); <span class="com">// "failed"</span></code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Always returns a Promise, even for trivial values</h4>
+        <p>Callers must remember to <code>await</code> or <code>.then()</code> it — the plain value is never returned directly.</p>
+        <pre><code><span class="kw">async function</span> <span class="fn">getFive</span>() { <span class="kw">return</span> <span class="num">5</span>; }
+
+<span class="kw">const</span> x = <span class="fn">getFive</span>();
+console.log(x); <span class="com">// Promise { 5 } — NOT 5</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Encourages accidental serialization</h4>
+        <p>Writing steps one after another with <code>await</code> is easy — but independent work ends up running sequentially instead of in parallel.</p>
+        <pre><code><span class="com">// slow: each await blocks the next, even though they're unrelated</span>
+<span class="kw">const</span> title = <span class="kw">await</span> page.<span class="fn">title</span>();
+<span class="kw">const</span> url = <span class="kw">await</span> page.<span class="fn">url</span>();
+<span class="com">// faster: Promise.all([page.title(), page.url()])</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Unhandled rejections can fail silently or crash</h4>
+        <p>If nothing awaits or catches the returned Promise, an error can go unnoticed or terminate the process depending on the runtime.</p>
+        <pre><code><span class="kw">async function</span> <span class="fn">run</span>() { <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'oops'</span>); }
+
+<span class="fn">run</span>(); <span class="com">// no await, no .catch() — unhandled promise rejection</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- AWAIT -->
+  <section class="topic" id="await">
+    <h2><span class="idx">4</span>await</h2>
+    <p class="lead"><code>await</code> pauses execution inside an <code>async</code> function until a Promise settles, then unwraps the resolved value (or throws the rejection).</p>
+
+    <h3 class="sub-h">In Playwright</h3>
+    <pre><code><span class="kw">async function</span> <span class="fn">safeLogin</span>(page, creds) {
+  <span class="kw">try</span> {
+    <span class="kw">await</span> page.<span class="fn">fill</span>(<span class="str">'#email'</span>, creds.email);
+    <span class="kw">await</span> page.<span class="fn">fill</span>(<span class="str">'#password'</span>, creds.password);
+    <span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#submit'</span>);
+  } <span class="kw">catch</span> (err) {
+    console.error(<span class="str">'Login failed:'</span>, err.message);
+    <span class="kw">throw</span> err;
+  }
+}</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">No more .then() chains</h4>
+        <p>Compare the same logic written both ways.</p>
+        <pre><code><span class="com">// with .then() chains</span>
+page.<span class="fn">goto</span>(url).then(() => page.<span class="fn">click</span>(<span class="str">'#go'</span>)).then(() => page.<span class="fn">title</span>());
+
+<span class="com">// with await — flatter and easier to follow</span>
+<span class="kw">await</span> page.<span class="fn">goto</span>(url);
+<span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#go'</span>);
+<span class="kw">await</span> page.<span class="fn">title</span>();</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Deterministic step-by-step waits</h4>
+        <p>Each awaited action genuinely finishes before the next line runs, which is what makes Playwright scripts reliable.</p>
+        <pre><code><span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#submit'</span>);
+<span class="com">// guaranteed: submit has completed before this line executes</span>
+<span class="kw">await</span> expect(page.<span class="fn">locator</span>(<span class="str">'.success'</span>)).<span class="fn">toBeVisible</span>();</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Sequential awaits waste time on independent work</h4>
+        <p>Awaiting unrelated Promises one at a time adds up their durations instead of overlapping them.</p>
+        <pre><code><span class="com">// ~1000ms total (500ms + 500ms, run back-to-back)</span>
+<span class="kw">await</span> <span class="fn">wait</span>(<span class="num">500</span>);
+<span class="kw">await</span> <span class="fn">wait</span>(<span class="num">500</span>);
+
+<span class="com">// ~500ms total — run concurrently instead</span>
+<span class="kw">await</span> Promise.<span class="fn">all</span>([<span class="fn">wait</span>(<span class="num">500</span>), <span class="fn">wait</span>(<span class="num">500</span>)]);</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">A missing await is a silent bug</h4>
+        <p>Forgetting <code>await</code> before a Playwright action doesn't throw — the script just races ahead of the browser.</p>
+        <pre><code><span class="com">// BUG: missing await — click may fire before navigation resolves</span>
+page.<span class="fn">click</span>(<span class="str">'#submit'</span>);
+<span class="kw">const</span> title = <span class="kw">await</span> page.<span class="fn">title</span>(); <span class="com">// may read the OLD page's title</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMISE.ALL -->
+  <section class="topic" id="promise-all">
+    <h2><span class="idx">5</span>Promise.all</h2>
+    <p class="lead"><code>Promise.all</code> runs multiple Promises concurrently and resolves once <em>all</em> succeed — or rejects immediately if any one fails.</p>
+
+    <h3 class="sub-h">In Playwright — action + event pairing</h3>
+    <pre><code><span class="kw">const</span> [popup] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  page.<span class="fn">waitForEvent</span>(<span class="str">'popup'</span>),
+  page.<span class="fn">click</span>(<span class="str">'text=Open in new tab'</span>),
+]);</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Real concurrency — faster than sequential awaits</h4>
+        <pre><code><span class="com">// sequential: ~600ms</span>
+<span class="kw">const</span> title = <span class="kw">await</span> page.<span class="fn">title</span>();
+<span class="kw">const</span> visible = <span class="kw">await</span> page.<span class="fn">locator</span>(<span class="str">'#banner'</span>).<span class="fn">isVisible</span>();
+
+<span class="com">// parallel: ~300ms</span>
+<span class="kw">const</span> [title2, visible2] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  page.<span class="fn">title</span>(),
+  page.<span class="fn">locator</span>(<span class="str">'#banner'</span>).<span class="fn">isVisible</span>(),
+]);</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Required pattern for catching triggered events</h4>
+        <p>The listener must be armed before the click fires, or the event can be missed entirely.</p>
+        <pre><code><span class="kw">const</span> [download] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  page.<span class="fn">waitForEvent</span>(<span class="str">'download'</span>), <span class="com">// armed first</span>
+  page.<span class="fn">click</span>(<span class="str">'text=Export CSV'</span>),   <span class="com">// then triggered</span>
+]);</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Fails fast, discarding other results</h4>
+        <p>One rejection rejects the whole thing immediately — you lose the results of Promises that would have succeeded.</p>
+        <pre><code><span class="kw">try</span> {
+  <span class="kw">await</span> Promise.<span class="fn">all</span>([
+    Promise.resolve(<span class="str">'ok'</span>),
+    Promise.reject(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'fail'</span>)),
+  ]);
+} <span class="kw">catch</span> (e) {
+  console.log(e.message); <span class="com">// "fail" — the 'ok' result is gone</span>
+}</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Wrong tool when you need every outcome regardless of failure</h4>
+        <p>Use <code>Promise.allSettled</code> instead when partial failures are acceptable.</p>
+        <pre><code><span class="kw">const</span> results = <span class="kw">await</span> Promise.<span class="fn">allSettled</span>([
+  <span class="fn">checkLink</span>(<span class="str">'/a'</span>), <span class="fn">checkLink</span>(<span class="str">'/b'</span>), <span class="fn">checkLink</span>(<span class="str">'/c'</span>),
+]);
+<span class="com">// every result is kept, tagged 'fulfilled' or 'rejected'</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Misuse can cause race conditions</h4>
+        <p>Running actions that must happen in order concurrently can break the intended sequence.</p>
+        <pre><code><span class="com">// BUG: both try to interact with the same field at once</span>
+<span class="kw">await</span> Promise.<span class="fn">all</span>([
+  page.<span class="fn">fill</span>(<span class="str">'#email'</span>, <span class="str">'a@test.com'</span>),
+  page.<span class="fn">click</span>(<span class="str">'#email'</span>), <span class="com">// should have happened BEFORE fill</span>
+]);</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMISE.RACE -->
+  <section class="topic" id="promise-race">
+    <h2><span class="idx">6</span>Promise.race</h2>
+    <p class="lead"><code>Promise.race</code> settles as soon as the <em>first</em> Promise in the array settles — whichever finishes first, resolved or rejected.</p>
+
+    <h3 class="sub-h">In Playwright — custom timeout</h3>
+    <pre><code><span class="kw">function</span> <span class="fn">timeout</span>(ms) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((_, reject) =>
+    setTimeout(() => reject(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'Timed out'</span>)), ms));
+}
+
+<span class="kw">await</span> Promise.<span class="fn">race</span>([
+  page.<span class="fn">waitForSelector</span>(<span class="str">'.results-loaded'</span>),
+  <span class="fn">timeout</span>(<span class="num">5000</span>),
+]);</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">Clean, reusable timeout wrapper</h4>
+        <pre><code><span class="kw">function</span> <span class="fn">withTimeout</span>(promise, ms) {
+  <span class="kw">return</span> Promise.<span class="fn">race</span>([promise, <span class="fn">timeout</span>(ms)]);
+}
+
+<span class="kw">await</span> <span class="fn">withTimeout</span>(page.<span class="fn">waitForSelector</span>(<span class="str">'.slow-widget'</span>), <span class="num">3000</span>);</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">"Whichever comes first" UI logic</h4>
+        <pre><code><span class="kw">const</span> outcome = <span class="kw">await</span> Promise.<span class="fn">race</span>([
+  page.<span class="fn">waitForSelector</span>(<span class="str">'.dashboard'</span>).then(() => <span class="str">'success'</span>),
+  page.<span class="fn">waitForSelector</span>(<span class="str">'.error-banner'</span>).then(() => <span class="str">'error'</span>),
+]);</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Losing Promises keep running</h4>
+        <p>They aren't cancelled — they can still throw unhandled rejections later, after the race is already decided.</p>
+        <pre><code><span class="kw">await</span> Promise.<span class="fn">race</span>([<span class="fn">wait</span>(<span class="num">100</span>), <span class="fn">wait</span>(<span class="num">5000</span>).then(() => { <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'late fail'</span>); })]);
+<span class="com">// race resolves at 100ms, but the 5000ms Promise still rejects later,</span>
+<span class="com">// potentially as an unhandled rejection</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">A losing rejection can still fail the race</h4>
+        <p>If the fastest-settling Promise happens to reject, <code>Promise.race</code> rejects too — even if another entry would have resolved moments later.</p>
+        <pre><code><span class="kw">const</span> fastFail = <span class="kw">new</span> <span class="fn">Promise</span>((_, reject) => setTimeout(reject, <span class="num">50</span>));
+<span class="kw">const</span> slowSuccess = <span class="kw">new</span> <span class="fn">Promise</span>(resolve => setTimeout(() => resolve(<span class="str">'ok'</span>), <span class="num">100</span>));
+
+<span class="kw">await</span> Promise.<span class="fn">race</span>([fastFail, slowSuccess]); <span class="com">// rejects, even though slowSuccess would work</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">Duplicates Playwright's built-in timeout option</h4>
+        <p>Playwright actions already accept a <code>timeout</code>, so a manual race can be unnecessary extra code.</p>
+        <pre><code><span class="com">// simpler — no Promise.race needed</span>
+<span class="kw">await</span> page.<span class="fn">waitForSelector</span>(<span class="str">'.results-loaded'</span>, { timeout: <span class="num">5000</span> });</code></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Reference guide &middot; JavaScript async patterns &amp; Playwright &middot; every pro/con illustrated with its own code sample.
+</footer>
+
+</body>
+</html>

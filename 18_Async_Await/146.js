@@ -6,6 +6,7 @@ getToken.then(function (token) {
 
 async function run(){
     let token = await getToken();
-    let user = await getUser();
+    let user = await getUser(token);
+    console.log(user);
 }
 
