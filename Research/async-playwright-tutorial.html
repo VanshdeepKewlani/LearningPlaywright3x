@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Async JavaScript & Playwright — Complete Tutorial</title>
+<style>
+  :root{
+    --bg: #0f1115;
+    --panel: #161922;
+    --panel-2: #1c202b;
+    --border: #2a2f3d;
+    --text: #e7e9ee;
+    --muted: #9aa1b2;
+    --accent: #5ec9c0;
+    --accent-2: #f2a65a;
+    --code-kw: #c792ea;
+    --code-str: #c3e88d;
+    --code-fn: #82aaff;
+    --code-com: #6b7280;
+    --code-num: #f78c6c;
+    --good: #7fd88f;
+    --bad: #ef6b6b;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(1200px 600px at 80% -10%, #1a2230 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.7;
+    padding-bottom: 80px;
+  }
+  a{color:var(--accent);}
+
+  header.hero{
+    padding: 64px 24px 40px;
+    max-width: 1020px;
+    margin: 0 auto;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(94,201,192,0.1);
+    border: 1px solid rgba(94,201,192,0.3);
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  h1{
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.15;
+    margin: 20px 0 14px;
+    letter-spacing: -0.02em;
+  }
+  .sub{
+    color: var(--muted);
+    font-size: 16.5px;
+    max-width: 720px;
+  }
+
+  nav.toc{
+    max-width: 1020px;
+    margin: 0 auto 32px;
+    padding: 0 24px;
+  }
+  .toc-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .toc-grid a{
+    display:block;
+    text-decoration:none;
+    color: var(--text);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .toc-grid a:hover{ border-color: var(--accent); transform: translateY(-1px); }
+  .toc-grid .n{ color: var(--accent-2); font-family: var(--mono); margin-right:8px; }
+
+  main{
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section.topic{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 34px;
+    margin-bottom: 30px;
+    scroll-margin-top: 24px;
+  }
+  section.topic h2{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    font-size: 24px;
+    margin: 0 0 14px;
+  }
+  section.topic h2 .idx{
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--bg);
+    background: var(--accent);
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display:flex; align-items:center; justify-content:center;
+    flex: none;
+  }
+  section.topic p.lead{
+    color: var(--text);
+    margin: 0 0 14px;
+    font-size: 15.5px;
+  }
+  section.topic p.lead + p.lead{
+    margin-top: -6px;
+  }
+  h3.sub-h{
+    font-size: 13.5px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--accent-2);
+    margin: 26px 0 10px;
+  }
+  h4.pc-h{
+    font-size: 15px;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+
+  pre{
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 13px;
+    margin: 0 0 14px;
+  }
+  code{ font-family: var(--mono); }
+  .kw{color:var(--code-kw);}
+  .str{color:var(--code-str);}
+  .fn{color:var(--code-fn);}
+  .com{color:var(--code-com); font-style: italic;}
+  .num{color:var(--code-num);}
+
+  .callout{
+    display:flex;
+    gap: 12px;
+    background: rgba(242,166,90,0.08);
+    border: 1px solid rgba(242,166,90,0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    margin: 16px 0;
+  }
+  .callout .tag{
+    font-family: var(--mono);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--accent-2);
+    flex: none;
+  }
+
+  /* Pros / Cons */
+  .proscons-wrap{
+    margin-top: 28px;
+  }
+  .pc-section-title{
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 700;
+    margin: 24px 0 14px;
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+  .pc-section-title.pros{ color: var(--good); }
+  .pc-section-title.cons{ color: var(--bad); }
+  .dot{
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display:inline-block;
+  }
+  .pc-section-title.pros .dot{ background: var(--good); }
+  .pc-section-title.cons .dot{ background: var(--bad); }
+
+  .pc-item{
+    border-radius: 12px;
+    padding: 18px 20px 6px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .pc-item.pros{
+    background: rgba(127,216,143,0.05);
+    border-color: rgba(127,216,143,0.25);
+  }
+  .pc-item.cons{
+    background: rgba(239,107,107,0.05);
+    border-color: rgba(239,107,107,0.25);
+  }
+  .pc-item p{
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
+  .pc-item pre{
+    margin-bottom: 14px;
+  }
+
+  ul.points{ margin: 0 0 16px; padding-left: 20px; }
+  ul.points li{ margin-bottom: 6px; font-size: 14.5px; }
+
+  .pill-row{ display:flex; flex-wrap:wrap; gap:8px; margin: 0 0 16px; }
+  .pill{
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  footer{
+    max-width: 1020px;
+    margin: 40px auto 0;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow">Tutorial · JS Concurrency · Playwright</span>
+  <h1>Async JavaScript, Explained: from Callbacks to Promise.race</h1>
+  <p class="sub">A full tutorial on the six building blocks of asynchronous JavaScript, written specifically with Playwright test automation in mind. Every concept gets a plain-language explanation, a runnable example, and a set of pros and cons that are each backed by their own short, easy-to-follow code snippet — not just a one-line summary.</p>
+</header>
+
+<nav class="toc">
+  <div class="toc-grid">
+    <a href="#callback"><span class="n">01</span>Callback</a>
+    <a href="#new-promise"><span class="n">02</span>new Promise</a>
+    <a href="#async"><span class="n">03</span>Async</a>
+    <a href="#await"><span class="n">04</span>Await</a>
+    <a href="#promise-all"><span class="n">05</span>Promise.all</a>
+    <a href="#promise-race"><span class="n">06</span>Promise.race</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- CALLBACK -->
+  <section class="topic" id="callback">
+    <h2><span class="idx">1</span>Callback</h2>
+    <p class="lead">A callback is simply a function that you pass as an argument into another function, with the understanding that it will be called later rather than immediately. This is the oldest pattern JavaScript has for dealing with asynchronous work, and it existed long before Promises or async/await were introduced to the language. The core idea is that instead of waiting for a result to come back directly, you tell the outer function "here's what to do once you're done," and it calls your function whenever that moment arrives. This can happen once, like when a timer finishes, or it can happen many times, like every time a button is clicked or every time the browser prints something to the console. Understanding callbacks properly is worth the effort because Promises, async/await, and even Playwright's own event-driven APIs are all built as layers on top of this same basic idea.</p>
+
+    <h3 class="sub-h">A simple callback example</h3>
+    <p class="lead">In the example below, <code>loadUser</code> simulates a slow operation using <code>setTimeout</code>, and instead of returning the user directly, it accepts a <code>callback</code> function as its second argument. Once the fake "work" is done after 500 milliseconds, it invokes that callback and passes it two things: an error (or <code>null</code> if nothing went wrong) and the actual result. This "error-first" style is a very common convention in older Node.js-style callback code, and you'll still see it if you work with legacy libraries.</p>
+    <pre><code><span class="kw">function</span> <span class="fn">loadUser</span>(id, callback) {
+  setTimeout(() => {
+    <span class="kw">const</span> user = { id, name: <span class="str">"Asha"</span> };
+    <span class="com">// call the callback once work is done, error-first style</span>
+    callback(<span class="kw">null</span>, user);
+  }, <span class="num">500</span>);
+}
+
+<span class="fn">loadUser</span>(<span class="num">1</span>, (err, user) => {
+  <span class="kw">if</span> (err) {
+    console.error(<span class="str">"Something went wrong:"</span>, err);
+    <span class="kw">return</span>;
+  }
+  console.log(<span class="str">"Loaded:"</span>, user);
+});</code></pre>
+
+    <h3 class="sub-h">Where you'll see callbacks in Playwright</h3>
+    <p class="lead">Even though most of the Playwright API returns Promises, callbacks haven't disappeared — they're still the natural choice whenever something can happen more than once, such as page events, or when you want to react to something as it happens rather than wait for a single final result. The two examples below show a console listener, which keeps firing every time the page logs something, and a route handler, which intercepts every matching network request so you can fake its response.</p>
+    <pre><code><span class="com">// this callback runs every single time the page calls console.log</span>
+page.<span class="fn">on</span>(<span class="str">'console'</span>, msg => {
+  console.log(<span class="str">`Page log: </span>${msg.text()}<span class="str">`</span>);
+});
+
+<span class="com">// this callback runs every time a request matching the pattern goes out</span>
+<span class="kw">await</span> page.<span class="fn">route</span>(<span class="str">'**/api/prices'</span>, route => {
+  route.<span class="fn">fulfill</span>({ json: { price: <span class="num">42</span> } });
+});</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">1. Callbacks handle repeated events naturally</h4>
+        <p>A Promise can only ever settle once, so it's the wrong tool for something that fires again and again, like console messages or dialog boxes. A callback, on the other hand, is just a plain function reference that Playwright can call as many times as it wants, whenever the matching event occurs. In the example below, the listener will keep printing every console message for as long as the page is open, without you having to set anything up again. This is exactly why Playwright's event system (<code>page.on(...)</code>) is callback-based rather than Promise-based.</p>
+        <pre><code>page.<span class="fn">on</span>(<span class="str">'console'</span>, msg => {
+  <span class="com">// this same function is invoked again and again,</span>
+  <span class="com">// once for every console.log call the page makes</span>
+  console.log(<span class="str">"Console message:"</span>, msg.text());
+});
+
+<span class="com">// later in the test, any page.evaluate() call that logs something</span>
+<span class="com">// will trigger the listener above automatically</span>
+<span class="kw">await</span> page.<span class="fn">evaluate</span>(() => console.log(<span class="str">'hello from the page'</span>));</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">2. Callbacks require no special language features</h4>
+        <p>Because a callback is just a function passed as a regular argument, this pattern works in literally every version of JavaScript, including very old browsers and old Node.js releases that predate Promises entirely. You don't need any special syntax, keywords, or runtime support — just ordinary functions. This makes callbacks a genuinely universal building block, and it's why so many older libraries (and some newer low-level APIs) still expose callback-based interfaces rather than Promise-based ones.</p>
+        <pre><code><span class="kw">function</span> <span class="fn">retry</span>(action, timesLeft, onDone) {
+  action((err, result) => {
+    <span class="kw">if</span> (err && timesLeft > <span class="num">0</span>) {
+      console.log(<span class="str">`Retrying, </span>${timesLeft}<span class="str"> attempts left...`</span>);
+      <span class="kw">return</span> <span class="fn">retry</span>(action, timesLeft - <span class="num">1</span>, onDone);
+    }
+    onDone(err, result);
+  });
+}</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">1. Deeply nested callbacks become hard to read ("callback hell")</h4>
+        <p>The moment you need to run several asynchronous steps one after another, each depending on the result of the last, callback-based code starts nesting deeper and deeper. Each new step adds another level of indentation, another closing brace, and another place where something can silently go wrong. In the example below, logging in, loading a dashboard, and loading widgets are three separate steps, but they end up nested three levels deep — and a real app would likely need even more steps than this.</p>
+        <pre><code><span class="fn">login</span>(user, (err, session) => {
+  <span class="kw">if</span> (err) <span class="kw">return</span> console.error(err);
+
+  <span class="fn">loadDashboard</span>(session, (err, data) => {
+    <span class="kw">if</span> (err) <span class="kw">return</span> console.error(err);
+
+    <span class="fn">loadWidgets</span>(data, (err, widgets) => {
+      <span class="kw">if</span> (err) <span class="kw">return</span> console.error(err);
+      <span class="com">// three levels deep already, and a real flow would go deeper</span>
+      render(widgets);
+    });
+  });
+});</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">2. Error handling is manual and easy to get wrong</h4>
+        <p>The "error-first" convention shown earlier is just a convention — nothing in the language forces you to check the <code>err</code> parameter before touching the result. This means it's entirely possible to forget the check, especially in a rush, and your code will happily try to use a result that doesn't exist. In the example below, the missing check means that if <code>loadUser</code> ever calls back with an error, the very next line will throw a confusing "cannot read property of undefined" error instead of a clear message about what actually went wrong.</p>
+        <pre><code><span class="fn">loadUser</span>(<span class="num">1</span>, (err, user) => {
+  <span class="com">// bug: forgot to check `err` before using `user`</span>
+  console.log(<span class="str">"Name is:"</span>, user.name);
+  <span class="com">// if err was set, `user` is likely undefined here,</span>
+  <span class="com">// and this line throws a confusing runtime error</span>
+});</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">3. There's no built-in way to run multiple callbacks in parallel</h4>
+        <p>Promises have <code>Promise.all</code> to wait for several operations at once, but plain callbacks have no equivalent built into the language. If you want to start two callback-based operations at the same time and only continue once both are finished, you have to build that coordination yourself, usually with a manual counter like the one below. This is not only extra boilerplate, it's also a common source of bugs if the counter logic is even slightly wrong.</p>
+        <pre><code><span class="kw">let</span> remaining = <span class="num">2</span>;
+<span class="kw">const</span> results = {};
+
+<span class="fn">loadUser</span>(<span class="num">1</span>, (err, user) => {
+  results.user = user;
+  <span class="kw">if</span> (--remaining === <span class="num">0</span>) console.log(<span class="str">"Both done:"</span>, results);
+});
+
+<span class="fn">loadOrders</span>(<span class="num">1</span>, (err, orders) => {
+  results.orders = orders;
+  <span class="kw">if</span> (--remaining === <span class="num">0</span>) console.log(<span class="str">"Both done:"</span>, results);
+});</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW PROMISE -->
+  <section class="topic" id="new-promise">
+    <h2><span class="idx">2</span>new Promise</h2>
+    <p class="lead">A <code>Promise</code> is an object that represents the eventual result of an asynchronous operation, and it can be in one of three states: pending, fulfilled, or rejected. You create one from scratch using <code>new Promise(executor)</code>, where the executor is a function that immediately receives two functions of its own, conventionally named <code>resolve</code> and <code>reject</code>. You call <code>resolve(value)</code> when the operation succeeds and you want to hand back a value, and you call <code>reject(error)</code> when something goes wrong and you want to signal failure. Once a Promise is created this way, it behaves exactly like any other Promise in the language — you can chain <code>.then()</code> onto it, <code>await</code> it inside an async function, or pass it into <code>Promise.all</code> and <code>Promise.race</code>. The main real-world use case for <code>new Promise</code> is "promisifying" an older callback-based function so that it fits into modern async/await code.</p>
+
+    <h3 class="sub-h">A basic example: a custom delay function</h3>
+    <p class="lead">Here, <code>wait</code> wraps <code>setTimeout</code>, which is itself a callback-based browser API, inside a Promise. After the specified number of milliseconds passes, the executor calls <code>resolve</code> with a message, which is what any code that awaits or chains onto <code>wait(...)</code> will eventually receive. Notice that if the input is invalid, the executor calls <code>reject</code> instead, immediately turning the Promise into a rejected one.</p>
+    <pre><code><span class="kw">function</span> <span class="fn">wait</span>(ms) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="kw">if</span> (ms < <span class="num">0</span>) {
+      <span class="kw">return</span> reject(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">"ms must be positive"</span>));
+    }
+    setTimeout(() => {
+      resolve(<span class="str">`waited </span>${ms}<span class="str">ms`</span>);
+    }, ms);
+  });
+}
+
+<span class="fn">wait</span>(<span class="num">1000</span>).then(message => console.log(message));</code></pre>
+
+    <h3 class="sub-h">Using new Promise for custom polling in Playwright</h3>
+    <p class="lead">Playwright doesn't know how to wait for things outside the browser, such as a background job finishing on your server, so sometimes you need to build your own waiting logic. The function below polls an endpoint every 500 milliseconds using <code>setInterval</code>, and resolves or rejects the Promise depending on the job's status, clearing the interval either way so it doesn't keep running forever.</p>
+    <pre><code><span class="kw">function</span> <span class="fn">waitForJobToFinish</span>(jobId) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="kw">const</span> interval = setInterval(<span class="kw">async</span> () => {
+      <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`/jobs/</span>${jobId}<span class="str">`</span>);
+      <span class="kw">const</span> { status } = <span class="kw">await</span> res.<span class="fn">json</span>();
+
+      <span class="kw">if</span> (status === <span class="str">'done'</span>) {
+        clearInterval(interval);
+        resolve(status);
+      } <span class="kw">else if</span> (status === <span class="str">'failed'</span>) {
+        clearInterval(interval);
+        reject(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'Job failed'</span>));
+      }
+      <span class="com">// otherwise, do nothing and let the interval poll again</span>
+    }, <span class="num">500</span>);
+  });
+}
+
+<span class="com">// used inside a Playwright test after starting a background job</span>
+<span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#start-job'</span>);
+<span class="kw">await</span> <span class="fn">waitForJobToFinish</span>(<span class="str">'job-123'</span>);</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">1. It converts old callback-based APIs into modern awaitable ones</h4>
+        <p>Plenty of older libraries and browser APIs still expect you to pass a callback rather than return a Promise, which means you can't directly use <code>await</code> with them. Wrapping such a function inside <code>new Promise</code> lets you call <code>resolve</code> when the callback succeeds and <code>reject</code> when it reports an error, effectively translating the old style into the new one. Once wrapped like this, the function behaves exactly like any native Promise-returning function, and you can use <code>await</code> on it directly. This pattern, sometimes called "promisifying," is one of the most common reasons developers reach for <code>new Promise</code> in real projects.</p>
+        <pre><code><span class="kw">function</span> <span class="fn">loadUserAsync</span>(id) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="fn">loadUser</span>(id, (err, user) => {
+      <span class="kw">if</span> (err) reject(err);
+      <span class="kw">else</span> resolve(user);
+    });
+  });
+}
+
+<span class="com">// now this old callback-based function can be awaited directly</span>
+<span class="kw">const</span> user = <span class="kw">await</span> <span class="fn">loadUserAsync</span>(<span class="num">1</span>);
+console.log(user.name);</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">2. Once wrapped, it plugs directly into the whole Promise toolkit</h4>
+        <p>A Promise created with <code>new Promise</code> is not a special or limited kind of Promise — it's exactly the same thing you get back from <code>fetch()</code> or any async function. That means it can be passed straight into <code>Promise.all</code>, raced with <code>Promise.race</code>, or awaited inside a <code>try/catch</code> block just like anything else. This composability is valuable because it means you only need to write the "bridging" code once, and after that you get to use every other async tool in the language on top of it.</p>
+        <pre><code><span class="com">// wait(...) returns a real Promise, so it composes with Promise.all</span>
+<span class="kw">const</span> [first, second] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  <span class="fn">wait</span>(<span class="num">100</span>),
+  <span class="fn">wait</span>(<span class="num">200</span>),
+]);
+console.log(first, second);</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">1. Wrapping something that's already a Promise is a well-known anti-pattern</h4>
+        <p>A very common mistake, especially among developers new to Promises, is wrapping a function that already returns a Promise (like <code>fetch</code>, or basically any Playwright method) inside yet another <code>new Promise</code>. This adds an unnecessary extra layer, makes the code longer and more confusing than it needs to be, and introduces more places where you could accidentally swallow an error or forget to reject properly. The fix is almost always to just return the existing Promise directly, or chain <code>.then()</code> onto it, rather than manually re-wrapping it.</p>
+        <pre><code><span class="com">// don't do this: fetch() already returns a Promise</span>
+<span class="kw">function</span> <span class="fn">getDataBad</span>() {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="fn">fetch</span>(<span class="str">'/api'</span>)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+}
+
+<span class="com">// do this instead — no wrapping needed at all</span>
+<span class="kw">function</span> <span class="fn">getDataGood</span>() {
+  <span class="kw">return</span> <span class="fn">fetch</span>(<span class="str">'/api'</span>);
+}</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">2. Forgetting to call resolve or reject leaves the Promise hanging forever</h4>
+        <p>Because you are manually responsible for calling <code>resolve</code> or <code>reject</code> inside the executor, it's entirely possible to write a code path that does neither. When that happens, the Promise simply stays "pending" forever, and any code that awaits it will hang indefinitely with no error and no timeout, which can be very confusing to debug. In the example below, if the random check fails, there's no <code>else</code> branch, so roughly half the calls to <code>buggy()</code> will never resolve or reject at all.</p>
+        <pre><code><span class="kw">function</span> <span class="fn">buggy</span>() {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="kw">if</span> (Math.random() > <span class="num">0.5</span>) {
+      resolve(<span class="str">'ok'</span>);
+    }
+    <span class="com">// bug: no "else" branch here — the other 50% of calls</span>
+    <span class="com">// never call resolve or reject, so they hang forever</span>
+  });
+}</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">3. Errors thrown asynchronously inside the executor are not automatically caught</h4>
+        <p>The Promise constructor will automatically catch errors that are thrown synchronously, directly inside the executor function, and turn them into a rejection for you. However, if the error is thrown later, inside an asynchronous callback like a <code>setTimeout</code> handler, the Promise machinery has no way of knowing about it — the throw happens outside of the constructor's own try/catch logic. In the example below, the thrown error inside <code>setTimeout</code> is not converted into a rejection; instead, it becomes an unhandled exception that can crash a script or silently disappear.</p>
+        <pre><code><span class="kw">new</span> <span class="fn">Promise</span>((resolve, reject) => {
+  setTimeout(() => {
+    <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'boom'</span>);
+    <span class="com">// this throw happens inside a later, separate callback,</span>
+    <span class="com">// so it is NOT automatically turned into a rejection</span>
+  }, <span class="num">100</span>);
+});</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASYNC -->
+  <section class="topic" id="async">
+    <h2><span class="idx">3</span>Async</h2>
+    <p class="lead">The <code>async</code> keyword is placed in front of a function definition to mark it as an asynchronous function, and it changes how that function behaves in two important ways. First, it guarantees that the function will always return a Promise, even if you write a plain <code>return</code> statement with a simple value inside it — JavaScript automatically wraps that value in a resolved Promise for you. Second, it unlocks the ability to use the <code>await</code> keyword anywhere inside that function's body, which is what lets you write asynchronous logic that reads like ordinary, top-to-bottom synchronous code. You'll see <code>async</code> everywhere in Playwright, because every test function, hook, and fixture callback is written as an async function so that it can use <code>await</code> on Playwright's Promise-based API.</p>
+
+    <div class="pill-row">
+      <span class="pill">async function name() {}</span>
+      <span class="pill">const fn = async () => {}</span>
+      <span class="pill">test('...', async ({ page }) => {})</span>
+    </div>
+
+    <h3 class="sub-h">A typical Playwright test written as an async function</h3>
+    <p class="lead">In this example, the entire test body is wrapped in an <code>async</code> function so that each Playwright action — navigating, filling a form, clicking a button — can be awaited in sequence. Without the <code>async</code> keyword here, using <code>await</code> anywhere inside this function would be a syntax error, since <code>await</code> is only legal inside functions explicitly marked as async (or at the top level of a module).</p>
+    <pre><code><span class="kw">const</span> { test, expect } = <span class="fn">require</span>(<span class="str">'@playwright/test'</span>);
+
+test(<span class="str">'user can log in'</span>, <span class="kw">async</span> ({ page }) => {
+  <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'https://example.com/login'</span>);
+  <span class="kw">await</span> page.<span class="fn">fill</span>(<span class="str">'#email'</span>, <span class="str">'user@test.com'</span>);
+  <span class="kw">await</span> page.<span class="fn">fill</span>(<span class="str">'#password'</span>, <span class="str">'secret'</span>);
+  <span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'button[type="submit"]'</span>);
+
+  <span class="kw">await</span> expect(page.<span class="fn">locator</span>(<span class="str">'.welcome-banner'</span>)).<span class="fn">toBeVisible</span>();
+});</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">1. Asynchronous code ends up reading like ordinary synchronous code</h4>
+        <p>Before async/await existed, chaining several asynchronous steps together meant writing a series of nested or chained <code>.then()</code> calls, which could get visually messy fast. With an <code>async</code> function, you can instead write each step as its own line with <code>await</code> in front of it, and the function will pause at each line until that step finishes, before moving to the next. This makes the control flow much easier to follow at a glance, especially for people who are more used to reading traditional, line-by-line synchronous code.</p>
+        <pre><code><span class="kw">async function</span> <span class="fn">checkout</span>(page) {
+  <span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#add-to-cart'</span>);
+  <span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#checkout'</span>);
+  <span class="kw">const</span> total = <span class="kw">await</span> page.<span class="fn">locator</span>(<span class="str">'#total'</span>).<span class="fn">textContent</span>();
+  <span class="kw">return</span> total;
+}</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">2. Thrown errors automatically become normal, catchable rejections</h4>
+        <p>If you write a plain <code>throw</code> statement anywhere inside an <code>async</code> function, JavaScript doesn't let that error crash the function immediately the way it would in regular synchronous code. Instead, it automatically converts that thrown error into a rejected Promise, which means the caller can handle it using either a regular <code>try/catch</code> block around an <code>await</code>, or a <code>.catch()</code> attached to the function's returned Promise. This unifies error handling for sync-style mistakes and genuinely async failures under the same familiar mechanism.</p>
+        <pre><code><span class="kw">async function</span> <span class="fn">risky</span>() {
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'failed'</span>);
+}
+
+<span class="fn">risky</span>()
+  .then(() => console.log(<span class="str">'succeeded'</span>))
+  .catch(err => console.log(<span class="str">'caught:'</span>, err.message)); <span class="com">// "caught: failed"</span></code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">1. The return value is always a Promise, even for trivial values</h4>
+        <p>Because <code>async</code> functions always return a Promise, calling one directly and expecting to immediately get back a plain value will not work the way you might expect from regular functions. In the example below, <code>getFive()</code> looks like it should just return the number <code>5</code>, but what you actually get back is a pending Promise object, and you need to either <code>await</code> it or chain <code>.then()</code> onto it to access the real value. This can surprise developers who are new to async/await and forget this rule.</p>
+        <pre><code><span class="kw">async function</span> <span class="fn">getFive</span>() {
+  <span class="kw">return</span> <span class="num">5</span>;
+}
+
+<span class="kw">const</span> x = <span class="fn">getFive</span>();
+console.log(x);          <span class="com">// logs: Promise { 5 }  —  NOT the number 5</span>
+
+<span class="kw">const</span> y = <span class="kw">await</span> <span class="fn">getFive</span>();
+console.log(y);          <span class="com">// logs: 5  —  this is the correct way to get the value</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">2. It's easy to accidentally serialize work that could run in parallel</h4>
+        <p>Because writing one <code>await</code> after another is so natural inside an async function, it's very easy to end up running operations one at a time even when they don't actually depend on each other. Each <code>await</code> pauses the whole function until that specific line finishes, so if you have two independent Playwright calls back to back, you're needlessly waiting for the first to fully complete before even starting the second. The fix, shown in the comment below, is to launch independent operations together and only await once, typically with <code>Promise.all</code>.</p>
+        <pre><code><span class="com">// slower: title() finishes fully before url() even starts,</span>
+<span class="com">// even though these two calls have nothing to do with each other</span>
+<span class="kw">const</span> title = <span class="kw">await</span> page.<span class="fn">title</span>();
+<span class="kw">const</span> url = <span class="kw">await</span> page.<span class="fn">url</span>();
+
+<span class="com">// faster: both start at roughly the same time</span>
+<span class="com">// const [title, url] = await Promise.all([page.title(), page.url()]);</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">3. Unhandled rejections can crash a script or fail silently</h4>
+        <p>If an <code>async</code> function throws an error and nothing ever awaits it or attaches a <code>.catch()</code> to its returned Promise, that rejection becomes an "unhandled promise rejection." Depending on the JavaScript environment you're running in, this can print a scary-looking warning, silently do nothing at all, or in some Node.js configurations even crash the entire process. In the example below, calling <code>run()</code> without awaiting it or catching its result means the thrown error has nowhere to go.</p>
+        <pre><code><span class="kw">async function</span> <span class="fn">run</span>() {
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'oops'</span>);
+}
+
+<span class="com">// bug: no `await`, no `.catch()` — this becomes</span>
+<span class="com">// an unhandled promise rejection that's easy to miss</span>
+<span class="fn">run</span>();</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- AWAIT -->
+  <section class="topic" id="await">
+    <h2><span class="idx">4</span>Await</h2>
+    <p class="lead">The <code>await</code> keyword can only be used inside a function marked <code>async</code> (or at the top level of certain module setups), and its job is to pause the execution of that function until the Promise placed after it settles. Once the Promise resolves, <code>await</code> "unwraps" it and gives you back the plain value directly, as if the asynchronous work had never happened at all from the point of view of your code. If the Promise instead rejects, <code>await</code> throws that rejection as a regular JavaScript error at that exact line, which means you can catch it using a completely ordinary <code>try/catch</code> block. This is what makes <code>await</code> so powerful for Playwright specifically: browser actions like clicking, typing, and navigating all take an unpredictable amount of time, and <code>await</code> guarantees your test won't move on to the next line until the current action has genuinely finished.</p>
+
+    <h3 class="sub-h">Sequential steps and error handling together</h3>
+    <p class="lead">The function below shows both core aspects of <code>await</code> at once: each Playwright action is awaited in order, guaranteeing the fill on email happens before the fill on password, which happens before the click. The whole sequence is also wrapped in a <code>try/catch</code> block, so if any single awaited step throws (for example, because the selector wasn't found), the <code>catch</code> block runs and logs a clear message before re-throwing the error.</p>
+    <pre><code><span class="kw">async function</span> <span class="fn">safeLogin</span>(page, creds) {
+  <span class="kw">try</span> {
+    <span class="kw">await</span> page.<span class="fn">fill</span>(<span class="str">'#email'</span>, creds.email);
+    <span class="kw">await</span> page.<span class="fn">fill</span>(<span class="str">'#password'</span>, creds.password);
+    <span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#submit'</span>);
+  } <span class="kw">catch</span> (err) {
+    console.error(<span class="str">'Login failed:'</span>, err.message);
+    <span class="kw">throw</span> err;
+  }
+}</code></pre>
+
+    <div class="callout">
+      <span class="tag">Key rule</span>
+      <span>Forgetting <code>await</code> before a Playwright action doesn't cause an immediate crash — it just means the next line of your test runs before the browser has actually finished the previous step, which is one of the single most common causes of flaky, unreliable Playwright tests.</span>
+    </div>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">1. It eliminates deeply nested or chained .then() calls</h4>
+        <p>Before <code>await</code>, sequencing three or four asynchronous Playwright steps meant chaining multiple <code>.then()</code> calls together, which can be visually cluttered and harder to scan quickly, especially once error handling is layered in on top. With <code>await</code>, each step becomes its own plain statement, and the overall shape of the function ends up looking almost identical to synchronous code. The comparison below shows the exact same three steps written both ways, side by side, so you can see how much flatter the <code>await</code> version is.</p>
+        <pre><code><span class="com">// written with .then() chains</span>
+page.<span class="fn">goto</span>(url)
+  .then(() => page.<span class="fn">click</span>(<span class="str">'#go'</span>))
+  .then(() => page.<span class="fn">title</span>())
+  .then(title => console.log(title));
+
+<span class="com">// the same logic written with await — flatter and linear</span>
+<span class="kw">await</span> page.<span class="fn">goto</span>(url);
+<span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#go'</span>);
+<span class="kw">const</span> title = <span class="kw">await</span> page.<span class="fn">title</span>();
+console.log(title);</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">2. Every awaited step is guaranteed to finish before the next one runs</h4>
+        <p>This might sound obvious, but it's actually the entire reason Playwright tests are reliable at all: the browser needs real time to click things, load pages, and update the DOM, and <code>await</code> makes your test code wait for that real time to pass. Without this guarantee, your test script (which runs extremely fast) would race far ahead of the browser (which does not), leading to assertions that check for things before they actually exist yet. The example below shows a click followed immediately by an assertion, where <code>await</code> ensures the click has truly completed first.</p>
+        <pre><code><span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#submit'</span>);
+<span class="com">// because the line above was awaited, we can be confident</span>
+<span class="com">// the click has genuinely completed before this next check runs</span>
+<span class="kw">await</span> expect(page.<span class="fn">locator</span>(<span class="str">'.success'</span>)).<span class="fn">toBeVisible</span>();</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">1. Awaiting independent operations one by one wastes real time</h4>
+        <p>Each time you write <code>await somePromise()</code>, your function genuinely pauses until that specific Promise settles before moving to the very next line, even if the next line's work has nothing to do with the first. If you have two unrelated delays or requests and await them back-to-back, their durations simply add together, when they could have run side by side instead. The timing comment in the example below spells out exactly how much slower the sequential version is compared to running both concurrently.</p>
+        <pre><code><span class="com">// sequential: roughly 500ms + 500ms = ~1000ms total,</span>
+<span class="com">// because the second wait() doesn't even start until the first finishes</span>
+<span class="kw">await</span> <span class="fn">wait</span>(<span class="num">500</span>);
+<span class="kw">await</span> <span class="fn">wait</span>(<span class="num">500</span>);
+
+<span class="com">// concurrent: roughly 500ms total, because both start immediately</span>
+<span class="com">// await Promise.all([wait(500), wait(500)]);</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">2. A missing await fails silently instead of throwing an error</h4>
+        <p>If you simply forget to type <code>await</code> before a Promise-returning call, JavaScript does not raise any kind of warning or error about it — the code is perfectly valid syntax, it just doesn't behave the way you probably intended. The Promise starts running in the background, but your function moves straight on to the next line without waiting for it to finish, which in Playwright means the browser action may not have completed yet by the time you check its result. This kind of bug is notoriously hard to spot by reading the code, since it looks correct at a glance.</p>
+        <pre><code><span class="com">// bug: missing await before click() means the click is only</span>
+<span class="com">// "started", not necessarily finished, by the time the next line runs</span>
+page.<span class="fn">click</span>(<span class="str">'#submit'</span>);
+<span class="kw">const</span> title = <span class="kw">await</span> page.<span class="fn">title</span>();
+<span class="com">// title may reflect the OLD page, if the click triggers navigation</span>
+<span class="com">// that hasn't actually completed by the time title() runs</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMISE.ALL -->
+  <section class="topic" id="promise-all">
+    <h2><span class="idx">5</span>Promise.all</h2>
+    <p class="lead"><code>Promise.all</code> takes an array of Promises and returns a single new Promise that resolves once every Promise in that array has resolved successfully, giving you back an array of their results in the same order you passed them in. If even one of the Promises in the array rejects, however, <code>Promise.all</code> immediately rejects as well, using that same rejection reason, without waiting for the rest to finish. This "run everything at once, but fail fast on the first error" behavior makes it ideal for two very different situations in Playwright: running several independent checks concurrently to save time, and — perhaps more importantly — capturing an event that a click or action is about to trigger, since you must start listening for the event before you perform the action that causes it.</p>
+
+    <h3 class="sub-h">The classic Playwright pattern: pairing an action with the event it triggers</h3>
+    <p class="lead">Many Playwright interactions cause something else to happen, such as a new browser tab opening or a file starting to download, and Playwright represents each of these as an event you can wait for with methods like <code>waitForEvent</code>. The tricky part is that if you click first and only start waiting for the event afterward, there's a real chance the event fires before your listener is even attached, and you'll miss it entirely. Wrapping both calls together inside <code>Promise.all</code> solves this: both Promises start running at essentially the same moment, so the listener is guaranteed to be armed before the click is dispatched.</p>
+    <pre><code><span class="com">// waiting for a new tab/popup that opens because of this click</span>
+<span class="kw">const</span> [popup] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  page.<span class="fn">waitForEvent</span>(<span class="str">'popup'</span>),   <span class="com">// listener is armed first</span>
+  page.<span class="fn">click</span>(<span class="str">'text=Open in new tab'</span>), <span class="com">// then the click happens</span>
+]);
+
+<span class="com">// the exact same pattern works for file downloads</span>
+<span class="kw">const</span> [download] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  page.<span class="fn">waitForEvent</span>(<span class="str">'download'</span>),
+  page.<span class="fn">click</span>(<span class="str">'text=Export CSV'</span>),
+]);</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">1. Genuine concurrency makes independent checks noticeably faster</h4>
+        <p>When you have several async operations that don't depend on each other's results, running them with <code>Promise.all</code> means they all start at roughly the same time and run alongside one another, rather than one strictly after the next. The total time taken ends up being close to the duration of the single slowest operation, instead of the sum of every operation added together. In the timed comparison below, running two checks with plain sequential <code>await</code> calls takes noticeably longer than running the exact same two checks together with <code>Promise.all</code>.</p>
+        <pre><code><span class="com">// sequential: total time is roughly title-time + visible-time added together</span>
+<span class="kw">const</span> title = <span class="kw">await</span> page.<span class="fn">title</span>();
+<span class="kw">const</span> visible = <span class="kw">await</span> page.<span class="fn">locator</span>(<span class="str">'#banner'</span>).<span class="fn">isVisible</span>();
+
+<span class="com">// concurrent: total time is roughly the SLOWER of the two, not the sum</span>
+<span class="kw">const</span> [title2, visible2] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  page.<span class="fn">title</span>(),
+  page.<span class="fn">locator</span>(<span class="str">'#banner'</span>).<span class="fn">isVisible</span>(),
+]);</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">2. It's the required pattern for reliably catching triggered events</h4>
+        <p>As explained above, some Playwright events fire so quickly after the action that causes them that clicking first and then calling <code>waitForEvent</code> afterward risks missing the event completely, especially in fast or automated environments. By starting the wait and the action inside the same <code>Promise.all</code> call, both Promises are created and begin running in the same synchronous tick of the event loop, guaranteeing the listener is ready before the triggering action fires. This pattern shows up constantly in real Playwright test suites for navigation, popups, downloads, and dialogs.</p>
+        <pre><code><span class="com">// waiting for navigation that happens because of this click</span>
+<span class="kw">const</span> [response] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  page.<span class="fn">waitForNavigation</span>(),
+  page.<span class="fn">click</span>(<span class="str">'text=Next page'</span>),
+]);
+console.log(<span class="str">'Navigated to:'</span>, response.url());</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">1. It fails fast and discards the results of everything else</h4>
+        <p>The moment any single Promise in the array rejects, <code>Promise.all</code> immediately rejects too, and it does not wait around for the other Promises to finish or give you access to their eventual results, even if some of them would have succeeded. This means that in a batch of, say, five checks where only one fails, you lose visibility into whether the other four passed or failed, which can make debugging test failures more confusing than it needs to be. The example below demonstrates this: even though the first Promise resolves successfully, that successful result is thrown away once the second one rejects.</p>
+        <pre><code><span class="kw">try</span> {
+  <span class="kw">const</span> results = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+    Promise.resolve(<span class="str">'ok'</span>),
+    Promise.reject(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'fail'</span>)),
+  ]);
+} <span class="kw">catch</span> (e) {
+  console.log(e.message);
+  <span class="com">// only prints "fail" — the successful "ok" result</span>
+  <span class="com">// from the first promise is completely lost</span>
+}</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">2. It's the wrong tool when you need every outcome, pass or fail</h4>
+        <p>Sometimes you genuinely want to know the result of every operation in a batch, including which ones failed and why, rather than stopping at the very first failure. For that situation, <code>Promise.all</code> is actually the wrong choice, and JavaScript provides a very similar-looking sibling method called <code>Promise.allSettled</code> specifically for this purpose. It waits for every Promise to settle one way or the other, and gives you back an array of result objects, each tagged as either <code>fulfilled</code> or <code>rejected</code>, so nothing gets silently discarded.</p>
+        <pre><code><span class="kw">const</span> results = <span class="kw">await</span> Promise.<span class="fn">allSettled</span>([
+  <span class="fn">checkLink</span>(<span class="str">'/a'</span>),
+  <span class="fn">checkLink</span>(<span class="str">'/b'</span>),
+  <span class="fn">checkLink</span>(<span class="str">'/c'</span>),
+]);
+
+results.forEach(r => {
+  <span class="kw">if</span> (r.status === <span class="str">'fulfilled'</span>) console.log(<span class="str">'OK:'</span>, r.value);
+  <span class="kw">else</span> console.log(<span class="str">'FAILED:'</span>, r.reason.message);
+});</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">3. Using it on operations that must happen in order can create race conditions</h4>
+        <p><code>Promise.all</code> is meant for genuinely independent operations, and using it for actions that actually need to happen in a specific sequence can introduce subtle race conditions in your tests. In the buggy example below, both a fill and a click are launched at the same moment, but the click was really meant to happen before the fill (to focus the field first) — by running them concurrently instead of sequentially, their actual order becomes unpredictable, which can lead to flaky, hard-to-reproduce test failures.</p>
+        <pre><code><span class="com">// bug: these two actions need to happen in order,</span>
+<span class="com">// but Promise.all runs them at roughly the same time instead</span>
+<span class="kw">await</span> Promise.<span class="fn">all</span>([
+  page.<span class="fn">fill</span>(<span class="str">'#email'</span>, <span class="str">'a@test.com'</span>),
+  page.<span class="fn">click</span>(<span class="str">'#email'</span>), <span class="com">// meant to focus the field FIRST</span>
+]);
+<span class="com">// fix: use two separate awaited statements instead, in the right order</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMISE.RACE -->
+  <section class="topic" id="promise-race">
+    <h2><span class="idx">6</span>Promise.race</h2>
+    <p class="lead"><code>Promise.race</code> also takes an array of Promises, but unlike <code>Promise.all</code>, it settles as soon as the very first Promise in that array settles, regardless of whether that first one resolves or rejects. Every other Promise in the array keeps running in the background, but their eventual outcomes are simply ignored by the race itself once a winner has already been decided. This behavior makes <code>Promise.race</code> the natural tool for "whichever happens first" logic, most commonly used to implement custom timeouts around operations that might otherwise take too long, or to detect which of two different possible outcomes occurs first on a page.</p>
+
+    <h3 class="sub-h">Adding a custom timeout to a slow operation</h3>
+    <p class="lead">The <code>timeout</code> helper below returns a Promise that does nothing but wait for a fixed amount of time and then reject with a timeout error. By racing this against a real Playwright wait, whichever one finishes first determines the outcome: if the selector appears quickly, the race resolves normally, but if it takes too long, the timeout Promise rejects first and the whole race rejects with a clear "Timed out" error instead of hanging indefinitely.</p>
+    <pre><code><span class="kw">function</span> <span class="fn">timeout</span>(ms) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((_, reject) => {
+    setTimeout(() => reject(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'Timed out'</span>)), ms);
+  });
+}
+
+<span class="kw">async function</span> <span class="fn">waitForElementOrTimeout</span>(page) {
+  <span class="kw">return</span> Promise.<span class="fn">race</span>([
+    page.<span class="fn">waitForSelector</span>(<span class="str">'.results-loaded'</span>),
+    <span class="fn">timeout</span>(<span class="num">5000</span>),
+  ]);
+}
+
+<span class="kw">try</span> {
+  <span class="kw">await</span> <span class="fn">waitForElementOrTimeout</span>(page);
+} <span class="kw">catch</span> (err) {
+  console.log(<span class="str">'Either the selector or the timeout lost the race:'</span>, err.message);
+}</code></pre>
+
+    <div class="proscons-wrap">
+      <div class="pc-section-title pros"><span class="dot"></span>Pros</div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">1. It gives you a clean, reusable way to add timeouts to any Promise</h4>
+        <p>Because <code>Promise.race</code> doesn't care what kind of Promises you give it, you can write one small helper function like <code>withTimeout</code> below and reuse it around any asynchronous operation in your codebase, not just Playwright actions. This keeps your timeout logic centralized in one place rather than duplicated everywhere you need it, and it makes the intent of your code very readable: "do this thing, but give up after this long."</p>
+        <pre><code><span class="kw">function</span> <span class="fn">withTimeout</span>(promise, ms) {
+  <span class="kw">return</span> Promise.<span class="fn">race</span>([promise, <span class="fn">timeout</span>(ms)]);
+}
+
+<span class="com">// reused for a totally different, slow-loading widget</span>
+<span class="kw">await</span> <span class="fn">withTimeout</span>(page.<span class="fn">waitForSelector</span>(<span class="str">'.slow-widget'</span>), <span class="num">3000</span>);</code></pre>
+      </div>
+
+      <div class="pc-item pros">
+        <h4 class="pc-h">2. It's a natural fit for "whichever outcome happens first" UI logic</h4>
+        <p>Sometimes a page can end up in one of two (or more) different states depending on what happens, such as a login either succeeding and showing a dashboard, or failing and showing an error banner, and you genuinely don't know in advance which one will occur. <code>Promise.race</code> lets you wait for both possibilities simultaneously and simply act on whichever one actually shows up first, without needing to guess or poll manually.</p>
+        <pre><code><span class="kw">const</span> outcome = <span class="kw">await</span> Promise.<span class="fn">race</span>([
+  page.<span class="fn">waitForSelector</span>(<span class="str">'.dashboard'</span>).then(() => <span class="str">'success'</span>),
+  page.<span class="fn">waitForSelector</span>(<span class="str">'.error-banner'</span>).then(() => <span class="str">'error'</span>),
+]);
+
+console.log(<span class="str">'Login outcome was:'</span>, outcome);</code></pre>
+      </div>
+
+      <div class="pc-section-title cons"><span class="dot"></span>Cons</div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">1. The losing Promises are not cancelled — they keep running</h4>
+        <p>JavaScript's Promises have no built-in cancellation mechanism, so when <code>Promise.race</code> "picks a winner," the other Promises in the array don't actually stop; they simply continue running to completion in the background, completely detached from the race's own result. If one of those losing Promises eventually rejects after the race has already resolved, that rejection can surface later as an unhandled promise rejection, which is easy to miss since your code has already moved on. The example below illustrates this: the race itself resolves quickly, but the slower Promise still rejects afterward, on its own schedule.</p>
+        <pre><code><span class="kw">const</span> slowFailure = <span class="fn">wait</span>(<span class="num">5000</span>).then(() => {
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'late failure'</span>);
+});
+
+<span class="kw">await</span> Promise.<span class="fn">race</span>([<span class="fn">wait</span>(<span class="num">100</span>), slowFailure]);
+<span class="com">// the race resolves after ~100ms using the fast promise, but</span>
+<span class="com">// slowFailure keeps running and still rejects ~5000ms later,</span>
+<span class="com">// potentially as an unhandled rejection nobody is listening for</span></code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">2. If the fastest Promise happens to reject, the whole race rejects too</h4>
+        <p>"Winning" the race doesn't mean "succeeding" — it just means settling first, and settling can mean either resolving or rejecting. If the quickest Promise in the array happens to be one that fails, <code>Promise.race</code> will reject with that failure immediately, even if a different, slightly slower Promise in the same array would have gone on to resolve successfully just moments later. The example below shows exactly this scenario: a fast-failing Promise beats a slower successful one, so the overall race ends in rejection despite a valid success being only 50 milliseconds away.</p>
+        <pre><code><span class="kw">const</span> fastFail = <span class="kw">new</span> <span class="fn">Promise</span>((_, reject) => {
+  setTimeout(() => reject(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'fast failure'</span>)), <span class="num">50</span>);
+});
+<span class="kw">const</span> slowSuccess = <span class="kw">new</span> <span class="fn">Promise</span>(resolve => {
+  setTimeout(() => resolve(<span class="str">'ok'</span>), <span class="num">100</span>);
+});
+
+<span class="kw">try</span> {
+  <span class="kw">await</span> Promise.<span class="fn">race</span>([fastFail, slowSuccess]);
+} <span class="kw">catch</span> (e) {
+  console.log(e.message);
+  <span class="com">// prints "fast failure", even though slowSuccess</span>
+  <span class="com">// would have resolved successfully just 50ms later</span>
+}</code></pre>
+      </div>
+
+      <div class="pc-item cons">
+        <h4 class="pc-h">3. It often duplicates timeout behavior Playwright already provides</h4>
+        <p>Most Playwright actions and assertions already accept their own <code>timeout</code> option directly as part of their normal call signature, meaning you often don't need to build a manual <code>Promise.race</code> timeout at all. Reaching for <code>Promise.race</code> in these cases adds extra code, an extra helper function, and an extra thing to maintain, when a single built-in option would achieve exactly the same result far more simply.</p>
+        <pre><code><span class="com">// unnecessary: manually racing against a custom timeout helper</span>
+<span class="kw">await</span> Promise.<span class="fn">race</span>([
+  page.<span class="fn">waitForSelector</span>(<span class="str">'.results-loaded'</span>),
+  <span class="fn">timeout</span>(<span class="num">5000</span>),
+]);
+
+<span class="com">// simpler: Playwright already supports a timeout option directly</span>
+<span class="kw">await</span> page.<span class="fn">waitForSelector</span>(<span class="str">'.results-loaded'</span>, { timeout: <span class="num">5000</span> });</code></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Tutorial &middot; JavaScript async patterns &amp; Playwright &middot; detailed explanations with runnable code for every concept, pro, and con.
+</footer>
+
+</body>
+</html>
