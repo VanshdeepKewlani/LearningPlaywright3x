@@ -105,6 +105,7 @@ npx playwright test 18_Async_Await/149_Example.spec.ts
 - [22 — OOP Inheritance](#22--oop-inheritance)
 - [23 — OOP Polymorphism](#23--oop-polymorphism)
 - [24 — OOP Abstraction](#24--oop-abstraction)
+- [Research — Async JavaScript & Playwright](#research--async-javascript--playwright)
 - [MCQ — Practice Questions](#mcq--practice-questions)
 - [IQ_Notes — Reference Library](#iq_notes--reference-library)
 
@@ -321,6 +322,12 @@ LearnPlaywright3x/
 ├── 24_OOPs_Abstraction/                           # planned OOP abstraction lessons
 ├── MCQ/
 │   └── Array_MCQ.md                         # array practice multiple-choice questions
+├── Research/
+│   ├── async-playwright-guide-full.html      # async JavaScript and Playwright guide
+│   ├── async-playwright-tutorial.html        # interactive async JavaScript and Playwright tutorial
+│   ├── CallbackPlaywright.spec.js            # callback patterns in Playwright-style tests
+│   ├── PromiseCustomPollingPlaywright.spec.js # promise polling in Playwright-style tests
+│   └── Promise*.js                            # callback and promise reference examples
 └── IQ_Notes/
     ├── README.md                             # reusable prompt template for new IQ notes
     ├── Source_Code_ByteCODE_Binary_IQ.md      # source vs bytecode vs machine code
@@ -2951,6 +2958,22 @@ Folder created for upcoming lessons on exposing essential operations while hidin
 
 ---
 
+## Research — Async JavaScript & Playwright
+
+The [`Research/`](Research/) folder contains standalone reference material for connecting JavaScript callbacks, promises, and async/await to Playwright automation workflows.
+
+| Resource | Focus |
+|----------|-------|
+| [`async-playwright-guide-full.html`](Research/async-playwright-guide-full.html) | Full async JavaScript and Playwright reference guide. |
+| [`async-playwright-tutorial.html`](Research/async-playwright-tutorial.html) | Structured tutorial with runnable concepts and Playwright examples. |
+| [`CallbackPlaywright.spec.js`](Research/CallbackPlaywright.spec.js) | Callback-based test flow examples. |
+| [`PromiseCustomPollingPlaywright.spec.js`](Research/PromiseCustomPollingPlaywright.spec.js) | Promise polling patterns for asynchronous test conditions. |
+| [`Promise*.js`](Research/) | Small examples covering promise creation, wrapping, chaining, and async loading. |
+
+Open either HTML file directly in a browser for the visual reference material. Run the JavaScript examples with Node.js; Playwright spec files require the repository's Playwright setup.
+
+---
+
 ## MCQ — Practice Questions
 
 **Concept:** [`MCQ/Array_MCQ.md`](MCQ/Array_MCQ.md) is a growing bank of short multiple-choice questions to self-test the concepts from each chapter, starting with arrays.
@@ -2978,7 +3001,7 @@ Concept explainers, generated on demand via the prompt template in [`IQ_Notes/RE
 
 ---
 
-> **TL;DR:** A from-scratch JavaScript fundamentals course for test automation, plus a GenAI prompting folder, an MCQ self-test bank, and an IQ_Notes reference library.
+> **TL;DR:** This repo is a from-scratch JavaScript fundamentals course (`console.log` → scoping → identifiers → literals/numbers → operators → conditionals → switch statements → user input → loops → arrays: create, search, iterate, transform, sort, slice, combine, check, copy, destructure → functions: the four types, expressions, arrows, IIFE, spread/rest, `return`, `var`/`let`/`const`, hoisting, TDZ → scope & closures: scope chain, private state, retry trackers → strings: quotes, template literals, character access, searching, extraction, transformation, splitting, joining, conversion → objects: literals, property access, mutation, nesting, methods, value vs reference → callbacks → promises → async/await: error handling, sequential and parallel execution, retries, microtask order) plus a `00_chaptet_GENAI` folder for LLM automation-framework prompting, a `Research` reference collection, an `MCQ` self-test bank, and an `IQ_Notes` library of standalone concept references anyone can regenerate with the same prompt template.
 
 ## Progress Tracker
 
