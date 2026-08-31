@@ -8,7 +8,7 @@ class Browser {
         console.log("starting the browser")
     }
     closeBrowser() {
-        console.log("starting the browser")
+        console.log("closing the browser")
     }
 }
 let chrome = new Browser("Chrome");
